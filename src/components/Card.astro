@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href?: string;
+  ctaLabel?: string;
+  imagePlaceholder?: string;
+  variant?: 'default' | 'primary' | 'campus' | 'kolleg' | 'purple';
+}
+
+const {
+  title,
+  description,
+  href,
+  ctaLabel = 'Mehr erfahren',
+  imagePlaceholder,
+  variant = 'default'
+} = Astro.props;
+
+const cardClass = `card ${variant !== 'default' ? `card-${variant}` : ''}`;
+---
+
+<div class={cardClass}>
+  <div class="card-image-placeholder">{imagePlaceholder || 'Bild'}</div>
+  <div class="card-content">
+    <h3 class="card-title">{title}</h3>
+    <p class="card-description">{description}</p>
+    {href && <a href={href} class="btn btn-outline">{ctaLabel}</a>}
+  </div>
+</div>

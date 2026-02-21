@@ -1,0 +1,62 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  badge?: string;
+  primaryCta?: {
+    label: string;
+    href: string;
+  };
+  secondaryCta?: {
+    label: string;
+    href: string;
+  };
+  imageSrc?: string;
+  imageAlt?: string;
+}
+
+const {
+  title,
+  description,
+  badge,
+  primaryCta,
+  secondaryCta,
+  imageSrc,
+  imageAlt = 'Hero Bild'
+} = Astro.props;
+---
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-content">
+      {badge && <div class="hero-badge">{badge}</div>}
+      <h1 class="hero-title" set:html={title} />
+      <p class="hero-description">{description}</p>
+      <div class="hero-actions">
+        {primaryCta && (
+          <a href={primaryCta.href} class="btn btn-primary btn-lg">{primaryCta.label}</a>
+        )}
+        {secondaryCta && (
+          <a href={secondaryCta.href} class="btn btn-outline btn-lg">{secondaryCta.label}</a>
+        )}
+      </div>
+    </div>
+    <div class="hero-visual">
+      {imageSrc ? (
+        <img src={imageSrc} alt={imageAlt} class="hero-image" />
+      ) : (
+        <div class="hero-image-placeholder">Hero Image</div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-image {
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+</style>

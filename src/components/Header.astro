@@ -1,0 +1,105 @@
+---
+const navItems = [
+  { label: 'Home', href: '/' },
+  {
+    label: 'Unsere Schule',
+    href: '/schule',
+    children: [
+      { label: 'Pädagogisches Konzept', href: '/schule/konzept' },
+      { label: 'Schulstufen', href: '/schule/schulstufen' },
+      { label: 'Tagesablauf', href: '/schule/tagesablauf' },
+    ]
+  },
+  {
+    label: 'Für Eltern',
+    href: '/eltern',
+    highlight: true,
+    children: [
+      { label: 'Interessiert?', href: '/eltern/interessiert' },
+      { label: 'Anmeldung & Kosten', href: '/eltern/anmeldung' },
+      { label: 'Eltern-Services', href: '/eltern/services' },
+      { label: 'Elternmitwirkung', href: '/eltern' },
+      { label: 'Schul-ABC', href: '/eltern' },
+    ]
+  },
+  {
+    label: 'Schulleben',
+    href: '/schulleben',
+    children: [
+      { label: 'Aktuelles & News', href: '/schulleben/aktuelles' },
+      { label: 'Projekte', href: '/schulleben' },
+      { label: 'Galerie', href: '/schulleben/galerie' },
+      { label: 'Veranstaltungen', href: '/schulleben' },
+    ]
+  },
+  {
+    label: 'Über Uns',
+    href: '/ueber-uns',
+    children: [
+      { label: 'Unsere Vision', href: '/ueber-uns' },
+      { label: 'Unser Team', href: '/ueber-uns' },
+      { label: 'Qualität', href: '/ueber-uns' },
+    ]
+  },
+  {
+    label: 'Unterstützen',
+    href: '/unterstuetzen',
+  },
+  {
+    label: 'Karriere',
+    href: '/karriere',
+    highlight: true,
+  },
+  {
+    label: 'Kontakt',
+    href: '/kontakt',
+  },
+];
+---
+
+<header class="header" id="header">
+  <div class="container header-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">ALZ</div>
+      <span>Astrid Lindgren Zentrum</span>
+    </a>
+
+    <nav class="nav-main">
+      {navItems.map((item) => (
+        item.children ? (
+          <div class="nav-item">
+            <a href={item.href} class="nav-link">
+              {item.label}
+              {item.highlight && <span style="margin-left: 4px;">⭐</span>}
+            </a>
+            <div class="nav-dropdown">
+              {item.children.map((child) => (
+                <a href={child.href}>{child.label}</a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <a href={item.href} class="nav-link">
+            {item.label}
+            {item.highlight && <span style="margin-left: 4px;">⭐</span>}
+          </a>
+        )
+      ))}
+    </nav>
+
+    <button class="menu-toggle" aria-label="Menü öffnen" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle functionality
+  const menuToggle = document.getElementById('menu-toggle');
+  menuToggle?.addEventListener('click', () => {
+    // Mobile menu implementation (can be expanded later)
+    console.log('Mobile menu toggle');
+  });
+</script>

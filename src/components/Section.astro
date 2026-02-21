@@ -1,0 +1,24 @@
+---
+interface Props {
+  id?: string;
+  label?: string;
+  title: string;
+  description?: string;
+  variant?: 'default' | 'alt' | 'highlight' | 'purple';
+}
+
+const { id, label, title, description, variant = 'default' } = Astro.props;
+
+const sectionClass = `section ${variant !== 'default' ? `section-${variant}` : ''}`;
+---
+
+<section class={sectionClass} id={id}>
+  <div class="container">
+    <header class="section-header">
+      {label && <span class="section-label">{label}</span>}
+      <h2 class="section-title">{title}</h2>
+      {description && <p class="section-description">{description}</p>}
+    </header>
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import { getNews } from '../../lib/google-sheets';
+
+const newsItems = await getNews();
+---
+
+<BaseLayout title="Aktuelles & News">
+  <Section 
+    title="Neues vom Campus" 
+    description="Berichte und Ankündigungen aus unserem Schulalltag."
+  >
+    <div class="grid grid-3">
+      {newsItems.map((item) => (
+        <Card 
+          title={item.title}
+          description={item.excerpt}
+          href="/schulleben/aktuelles"
+          ctaLabel="Weiterlesen"
+          imagePlaceholder={item.category}
+        />
+      ))}
+    </div>
+  </Section>
+</BaseLayout>

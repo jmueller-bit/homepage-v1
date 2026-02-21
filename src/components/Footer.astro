@@ -1,0 +1,72 @@
+---
+const footerLinks = {
+  schule: [
+    { label: 'Pädagogisches Konzept', href: '/schule/konzept' },
+    { label: 'Schulstufen', href: '/schule/schulstufen' },
+    { label: 'Tagesablauf', href: '/schule/tagesablauf' },
+  ],
+  eltern: [
+    { label: 'Interessiert?', href: '/eltern/interessiert' },
+    { label: 'Anmeldung', href: '/eltern/anmeldung' },
+    { label: 'Elternportal', href: '/eltern/services' },
+  ],
+  kontakt: [
+    { label: 'Kontakt', href: '/kontakt' },
+    { label: 'Impressum', href: '/impressum' },
+    { label: 'Datenschutz', href: '/datenschutz' },
+  ],
+};
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="logo-icon">ALZ</div>
+          <span>Astrid Lindgren Zentrum</span>
+        </div>
+        <p class="footer-description">
+          Reformpädagogische Bildung für Kinder und Jugendliche von der Primaria bis zum Kolleg.
+        </p>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-title">Unsere Schule</h4>
+        <ul class="footer-links">
+          {footerLinks.schule.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-title">Für Eltern</h4>
+        <ul class="footer-links">
+          {footerLinks.eltern.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4 class="footer-title">Kontakt & Rechtliches</h4>
+        <ul class="footer-links">
+          {footerLinks.kontakt.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        © {new Date().getFullYear()} Astrid Lindgren Zentrum. Alle Rechte vorbehalten.
+      </p>
+      <div class="footer-legal">
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+</footer>

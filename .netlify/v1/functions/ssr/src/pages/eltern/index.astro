@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import FeatureCard from '../../components/FeatureCard.astro';
+---
+
+<BaseLayout title="Für Eltern">
+  <Hero
+    title="Partnerschaft für die <span class='hero-title-accent'>Zukunft</span>"
+    description="Die Zusammenarbeit mit den Eltern ist ein wesentlicher Bestandteil unserer Schulgemeinschaft. Hier finden Sie alle Informationen zur Anmeldung, zum Schulalltag und wie Sie sich einbringen können."
+    badge="Eltern & Schule"
+    imagePlaceholder="ELTERN"
+  />
+
+  <Section 
+    title="Alles für Familien" 
+    description="Von der ersten Information bis zum Schulalltag – wir begleiten Sie in jedem Schritt."
+    variant="alt"
+  >
+    <div class="grid grid-3">
+      <Card 
+        title="Ist unsere Schule passend?" 
+        description="Finden Sie heraus, ob das ALZ das richtige für Ihr Kind ist. Schnuppertage, FAQ und Aufnahmeprozess."
+        variant="primary"
+        imagePlaceholder="INTERESSIERT"
+        href="/eltern/interessiert"
+      />
+      <Card 
+        title="Anmeldung & Kosten" 
+        description="Anmeldeformular, Kostenübersicht, Finanzierung, Förderungen und Geschwisterrabatt."
+        variant="campus"
+        imagePlaceholder="ANMELDUNG"
+        href="/eltern/anmeldung"
+      />
+      <Card 
+        title="Eltern-Services" 
+        description="Elternportal, Schulkalender, Ferienplan, Stundenplan und Krankmeldung – alles an einem Ort."
+        variant="kolleg"
+        imagePlaceholder="SERVICES"
+        href="/eltern/services"
+      />
+    </div>
+  </Section>
+
+  <Section title="Elternmitwirkung">
+    <div class="grid grid-2">
+      <div class="content-block">
+        <h3>Gemeinsam gestalten</h3>
+        <p>Als Elterninitiative leben wir vom Engagement der Familien. Ob im Garten, bei Festen oder in Arbeitsgruppen – jede Unterstützung zählt. Gemeinsam schaffen wir den Rahmen, in dem unsere Kinder wachsen können.</p>
+        <a href="/ueber-uns" class="btn btn-primary">Mehr über den Verein</a>
+      </div>
+      <div class="content-block">
+        <h3>Schul-ABC & Kontakt</h3>
+        <p>Wir setzen auf einen transparenten Austausch. Monatliche Elternbriefe, das Schul-ABC und digitale Plattformen halten Sie immer auf dem Laufenden.</p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
