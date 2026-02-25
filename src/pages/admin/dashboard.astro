@@ -1,0 +1,182 @@
+---
+export const prerender = false;
+---
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Astrid Lindgren Zentrum</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f0;
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 1.25rem;
+      color: #2d2d2d;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-outline {
+      color: #666;
+      border: 1px solid #e5e5e5;
+      background: white;
+    }
+    
+    .btn-outline:hover {
+      background: #f5f5f0;
+    }
+    
+    .btn-primary {
+      background: #8b9a46;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #7a853d;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: #f0f4e8;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      color: #8b9a46;
+    }
+    
+    .card h2 {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+      color: #2d2d2d;
+    }
+    
+    .card p {
+      color: #666;
+      font-size: 0.875rem;
+    }
+    
+    .card-arrow {
+      margin-top: 1rem;
+      color: #8b9a46;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>ALZ Admin</h1>
+    <div class="header-actions">
+      <a href="/" class="btn btn-outline">Zur Website</a>
+      <button class="btn btn-outline" id="logoutBtn">Abmelden</button>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="cards">
+      <a href="/admin/news" class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5 0 00-2.5-2.5H15" />
+          </svg>
+        </div>
+        <h2>News verwalten</h2>
+        <p>Neue Artikel erstellen, bearbeiten und löschen</p>
+        <div class="card-arrow">→ News öffnen</div>
+      </a>
+      
+      <a href="/admin/galerie" class="card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h2>Galerie</h2>
+        <p>Bilder hochladen und verwalten</p>
+        <div class="card-arrow">→ Galerie öffnen</div>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Check auth
+    if (!document.cookie.includes('admin_auth=true')) {
+      window.location.href = '/admin';
+    }
+    
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.cookie = 'admin_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      window.location.href = '/admin';
+    });
+  </script>
+</body>
+</html>

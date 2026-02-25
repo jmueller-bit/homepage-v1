@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import { getNewsBySlug } from '../../lib/contentful';
+
+const { slug } = Astro.params;
+const newsItem = await getNewsBySlug(slug!);
+
+if (!newsItem) {
+  return Astro.redirect('/schulleben/aktuelles');
+}
+
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('de-AT', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
+
+// Extract plain text from Contentful Rich Text
+const getPlainText = (content: any): string => {
+  if (!content || typeof content !== 'object') return '';
+  if (content.nodeType === 'document') {
+    return content.content
+      ?.map((block: any) => block.content?.map((inline: any) => inline.value || '').join(''))
+      .join('\n\n') || '';
+  }
+  return String(content);
+};
+---
+
+<BaseLayout title={`${newsItem.title} | Astrid Lindgren Zentrum`}>
+  <Section 
+    title={newsItem.title}
+    variant="alt"
+  >
+    <article class="news-article">
+      <div class="news-meta">
+        <span class="news-date">{formatDate(newsItem.date)}</span>
+        {newsItem.category && (
+          <span class="news-category">{newsItem.category}</span>
+        )}
+      </div>
+      
+      {newsItem.image && (
+        <div class="news-image">
+          <img src={newsItem.image.url} alt={newsItem.title} />
+        </div>
+      )}
+      
+      <div class="news-excerpt">
+        <p><strong>{newsItem.excerpt}</strong></p>
+      </div>
+      
+      <div class="news-content">
+        <p>{getPlainText(newsItem.content)}</p>
+      </div>
+      
+      <div class="news-footer">
+        <a href="/schulleben/aktuelles" class="back-link">← Zurück zu Aktuelles</a>
+      </div>
+    </article>
+  </Section>
+</BaseLayout>
+
+<style>
+  .news-article {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .news-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .news-category {
+    background: #8b9a46;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+  }
+  
+  .news-image {
+    margin: 1.5rem 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  
+  .news-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .news-excerpt {
+    margin: 1.5rem 0;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  
+  .news-content {
+    line-height: 1.8;
+    color: #333;
+  }
+  
+  .news-content p {
+    margin-bottom: 1rem;
+  }
+  
+  .news-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+  }
+  
+  .back-link {
+    color: #8b9a46;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>

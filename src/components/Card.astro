@@ -5,6 +5,7 @@ interface Props {
   href?: string;
   ctaLabel?: string;
   imagePlaceholder?: string;
+  image?: string;
   variant?: 'default' | 'primary' | 'campus' | 'kolleg' | 'purple';
 }
 
@@ -14,6 +15,7 @@ const {
   href,
   ctaLabel = 'Mehr erfahren',
   imagePlaceholder,
+  image,
   variant = 'default'
 } = Astro.props;
 
@@ -21,7 +23,13 @@ const cardClass = `card ${variant !== 'default' ? `card-${variant}` : ''}`;
 ---
 
 <div class={cardClass}>
-  <div class="card-image-placeholder">{imagePlaceholder || 'Bild'}</div>
+  {image ? (
+    <div class="card-image">
+      <img src={image} alt={title} />
+    </div>
+  ) : (
+    <div class="card-image-placeholder">{imagePlaceholder || 'Bild'}</div>
+  )}
   <div class="card-content">
     <h3 class="card-title">{title}</h3>
     <p class="card-description">{description}</p>

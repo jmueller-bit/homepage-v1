@@ -3,31 +3,33 @@
  * Fetches content from Google Sheets for the ALZ Website
  */
 
-import { google } from 'googleapis';
-
 // Configuration
 const SHEET_ID = import.meta.env.GOOGLE_SHEET_ID;
 const SERVICE_ACCOUNT_EMAIL = import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const PRIVATE_KEY = import.meta.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-console.log(`[CMS] Initializing fetching from Sheet: ${SHEET_ID}`);
-
-// Initialize Sheets client
-function getSheetsClient() {
+// Lazy load googleapis only when needed (not compatible with Vite dev mode)
+async function getSheetsClient() {
   if (!SHEET_ID || !SERVICE_ACCOUNT_EMAIL || !PRIVATE_KEY) {
     console.warn('Google Sheets credentials not configured. Using mock data.');
     return null;
   }
 
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: SERVICE_ACCOUNT_EMAIL,
-      private_key: PRIVATE_KEY,
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-  });
+  try {
+    const { google } = await import('googleapis');
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: SERVICE_ACCOUNT_EMAIL,
+        private_key: PRIVATE_KEY,
+      },
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
 
-  return google.sheets({ version: 'v4', auth });
+    return google.sheets({ version: 'v4', auth });
+  } catch (error) {
+    console.error('Failed to load googleapis:', error);
+    return null;
+  }
 }
 
 // Types
@@ -66,7 +68,7 @@ export interface JobPosting {
  * G: Date (6), H: Tags (7), I: Image (8), ... O: Slug (14), ... R: Status (17)
  */
 export async function getNews(): Promise<NewsItem[]> {
-  const sheets = getSheetsClient();
+  const sheets = await getSheetsClient();
   if (!sheets) return getMockNews();
 
   try {
@@ -103,7 +105,7 @@ export async function getNews(): Promise<NewsItem[]> {
  * Fetch events from Google Sheets
  */
 export async function getEvents(): Promise<Event[]> {
-  const sheets = getSheetsClient();
+  const sheets = await getSheetsClient();
   if (!sheets) return getMockEvents();
 
   try {
@@ -134,7 +136,7 @@ export async function getEvents(): Promise<Event[]> {
  * Fetch job postings from Google Sheets
  */
 export async function getJobs(): Promise<JobPosting[]> {
-  const sheets = getSheetsClient();
+  const sheets = await getSheetsClient();
   if (!sheets) return getMockJobs();
 
   try {

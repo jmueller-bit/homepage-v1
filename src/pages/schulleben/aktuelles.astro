@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import Card from '../../components/Card.astro';
-import { getNews } from '../../lib/google-sheets';
+import { getNews } from '../../lib/contentful';
 
 const newsItems = await getNews();
 ---
@@ -17,8 +17,9 @@ const newsItems = await getNews();
         <Card 
           title={item.title}
           description={item.excerpt}
-          href="/schulleben/aktuelles"
+          href={`/news/${item.slug}`}
           ctaLabel="Weiterlesen"
+          image={item.image?.url}
           imagePlaceholder={item.category}
         />
       ))}
