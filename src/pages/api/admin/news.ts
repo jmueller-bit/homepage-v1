@@ -5,6 +5,21 @@ import { sendTelegramNotification, formatNewsNotification } from '../../../lib/t
 
 export const GET: APIRoute = async () => {
   try {
+    // Check if Contentful is configured
+    const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+    const accessToken = import.meta.env.CONTENTFUL_ACCESS_TOKEN;
+    
+    if (!spaceId || spaceId === 'TODO' || !accessToken) {
+      return new Response(JSON.stringify({ 
+        error: 'Contentful nicht konfiguriert',
+        spaceIdSet: !!spaceId,
+        accessTokenSet: !!accessToken
+      }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const entries = await contentfulClient.getEntries({
       content_type: NEWS_CONTENT_TYPE,
       order: ['-fields.datum'],
@@ -27,9 +42,13 @@ export const GET: APIRoute = async () => {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching news:', error);
-    return new Response(JSON.stringify({ error: 'Fehler beim Laden der News' }), {
+    return new Response(JSON.stringify({ 
+      error: 'Fehler beim Laden der News',
+      details: error.message,
+      stack: error.stack 
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
