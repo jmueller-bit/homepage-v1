@@ -2,6 +2,7 @@ import { createClient } from 'contentful';
 
 export const NEWS_CONTENT_TYPE = 'newsArtikel';
 export const GALLERY_CONTENT_TYPE = 'galleryImage';
+export const TEAM_CONTENT_TYPE = 'teamMitglied';
 
 // Delivery Client (read-only, für öffentliche Website)
 export const contentfulClient = createClient({
@@ -46,6 +47,19 @@ export type GalleryImage = {
   description?: string;
   width?: number;
   height?: number;
+};
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  role: string;
+  bio?: string;
+  order?: number;
+  photo?: {
+    url: string;
+    width?: number;
+    height?: number;
+  };
 };
 
 function mapNewsEntry(entry: any): NewsEntry | null {
@@ -117,6 +131,46 @@ function mapGalleryImage(entry: any): GalleryImage | null {
   };
 }
 
+function mapTeamMember(entry: any): TeamMember | null {
+  const fields = entry.fields as Record<string, any>;
+
+  const name = fields.name || fields.titel || fields.vorname || fields.fullName;
+  const role = fields.funktion || fields.role || fields.rolle || fields.position;
+  let bio = fields.bio || fields.beschreibung || fields.text;
+  const order = fields.order ?? fields.reihenfolge;
+  const photoAsset = fields.photo || fields.foto || fields.bild;
+
+  if (!name || !role) return null;
+
+  // Extract simple text if bio is a Rich Text object
+  if (bio && typeof bio === 'object' && bio.nodeType === 'document') {
+    try {
+      bio = bio.content
+        ?.map((c: any) => c.content?.map((cc: any) => cc.value || '').join(''))
+        .join('\n');
+    } catch (e) {
+      bio = '';
+    }
+  }
+
+  const photoFile = photoAsset?.fields?.file;
+
+  return {
+    id: entry.sys.id,
+    name,
+    role,
+    bio: typeof bio === 'string' ? bio : undefined,
+    order: typeof order === 'number' ? order : undefined,
+    photo: photoFile
+      ? {
+        url: photoFile.url?.startsWith('http') ? photoFile.url : `https:${photoFile.url}`,
+        width: photoFile.details?.image?.width,
+        height: photoFile.details?.image?.height,
+      }
+      : undefined,
+  };
+}
+
 export async function getNews(limit = 10): Promise<NewsEntry[]> {
   const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
   if (!spaceId || spaceId === 'TODO') {
@@ -172,6 +226,31 @@ export async function getGalleryImages(limit = 50): Promise<GalleryImage[]> {
       .sort((a, b) => a.order - b.order);
   } catch (error: any) {
     console.error('Error fetching gallery images:', error);
+    return [];
+  }
+}
+
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+  if (!spaceId || spaceId === 'TODO') {
+    return [];
+  }
+
+  try {
+    const entries = await contentfulClient.getEntries({
+      content_type: TEAM_CONTENT_TYPE,
+      limit: 50,
+    });
+
+    const mapped = entries.items.map(mapTeamMember).filter(Boolean) as TeamMember[];
+    return mapped.sort((a, b) => {
+      const aOrder = a.order ?? Number.MAX_SAFE_INTEGER;
+      const bOrder = b.order ?? Number.MAX_SAFE_INTEGER;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return a.name.localeCompare(b.name);
+    });
+  } catch (error: any) {
+    console.error('Error fetching team members:', error);
     return [];
   }
 }

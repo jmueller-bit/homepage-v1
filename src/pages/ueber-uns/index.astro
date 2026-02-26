@@ -2,6 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
+import { getTeamMembers } from '../../lib/contentful';
+
+const teamMembers = await getTeamMembers();
 ---
 
 <BaseLayout title="Über Uns">
@@ -30,10 +33,108 @@ import Section from '../../components/Section.astro';
       <div class="team-preview" id="team">
         <h3>Unser Team</h3>
         <p>Drei Säulen tragen unsere Schule: Unsere engagierten Pädagog:innen, die weitsichtige Geschäftsführung und unser fürsorgliches Team in Küche und Haushalt.</p>
-        <div class="hero-actions" style="margin-top: var(--space-6);">
-          <a href="/kontakt" class="btn btn-outline">Team kennenlernen</a>
-        </div>
+        
+        {teamMembers.length > 0 ? (
+          <div class="team-grid" style="margin-top: var(--space-6);">
+            {teamMembers.map((member) => (
+              <div class="team-card">
+                {member.photo ? (
+                  <div class="team-photo">
+                    <img src={member.photo.url} alt={member.name} loading="lazy" />
+                  </div>
+                ) : (
+                  <div class="team-photo-placeholder">
+                    <span>{member.name.charAt(0)}</span>
+                  </div>
+                )}
+                <div class="team-info">
+                  <h4 class="team-name">{member.name}</h4>
+                  <p class="team-role">{member.role}</p>
+                  {member.bio && <p class="team-bio">{member.bio}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="hero-actions" style="margin-top: var(--space-6);">
+            <a href="/kontakt" class="btn btn-outline">Team kennenlernen</a>
+          </div>
+        )}
       </div>
     </div>
   </Section>
 </BaseLayout>
+
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .team-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .team-photo {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--color-gray-200);
+  }
+
+  .team-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .team-photo-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+  }
+
+  .team-info {
+    padding: 1rem;
+  }
+
+  .team-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--color-gray-700);
+  }
+
+  .team-role {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .team-bio {
+    font-size: 0.875rem;
+    color: var(--color-gray-500);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
