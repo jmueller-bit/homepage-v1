@@ -2,11 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import Card from '../../components/Card.astro';
-import { getNews, getEvents } from '../../lib/google-sheets';
-import { formatDate } from '../../lib/utils';
+import { getNews } from '../../lib/contentful';
 
 const newsItems = await getNews();
-const events = await getEvents();
 ---
 
 <BaseLayout title="Schulleben">
@@ -23,25 +21,6 @@ const events = await getEvents();
           ctaLabel="Beitrag lesen"
           imagePlaceholder={item.category || 'News'}
         />
-      ))}
-    </div>
-  </Section>
-
-  <Section 
-    title="Termine & Events" 
-    description="Verpassen Sie keine Veranstaltung am Campus."
-    variant="alt"
-  >
-    <div class="grid grid-2">
-      {events.map((event) => (
-        <div class="event-card" style="padding: var(--space-6); background: white; border: 1px solid var(--color-gray-200);">
-          <div class="event-date" style="color: var(--color-primary); font-weight: bold; margin-bottom: var(--space-2);">
-            {formatDate(event.date)} {event.time && `| ${event.time}`}
-          </div>
-          <h3 class="event-title">{event.title}</h3>
-          <p class="event-location" style="font-size: var(--text-sm); color: var(--text-secondary);">📍 {event.location || 'Campus'}</p>
-          <p class="event-description">{event.description}</p>
-        </div>
       ))}
     </div>
   </Section>

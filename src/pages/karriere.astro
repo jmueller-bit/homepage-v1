@@ -2,9 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
-import { getJobs } from '../lib/google-sheets';
-
-const jobs = await getJobs();
+const jobs = [];
 ---
 
 <BaseLayout title="Karriere">
