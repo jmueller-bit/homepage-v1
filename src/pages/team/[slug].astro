@@ -35,6 +35,9 @@ const allMembers = await getTeamMembers();
       
       <div class="member-info-section">
         <h2 class="member-role">{member.role}</h2>
+        {member.h1 && (
+          <h3 class="member-h1">{member.h1}</h3>
+        )}
         {member.bio && (
           <div class="member-bio-full">
             {member.bio.split('\n').map((paragraph) => (
@@ -137,6 +140,14 @@ const allMembers = await getTeamMembers();
     color: var(--color-primary);
     margin-bottom: 1.5rem;
     font-weight: 600;
+  }
+  
+  .member-h1 {
+    font-size: 1.25rem;
+    color: var(--color-gray-700);
+    font-weight: 600;
+    margin: -1rem 0 1.5rem 0;
+    font-style: italic;
   }
   
   .member-bio-full {

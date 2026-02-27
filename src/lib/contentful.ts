@@ -54,6 +54,7 @@ export type TeamMember = {
   name: string;
   role: string;
   bio?: string;
+  h1?: string;
   order?: number;
   photo?: {
     url: string;
@@ -139,6 +140,7 @@ function mapTeamMember(entry: any): TeamMember | null {
   let bio = fields.bio || fields.beschreibung || fields.text;
   const order = fields.order ?? fields.reihenfolge;
   const photoAsset = fields.photo || fields.foto || fields.bild;
+  const h1 = fields.h1 || fields.ueberschrift || fields.headline || fields.subtitle;
 
   if (!name || !role) return null;
 
@@ -160,6 +162,7 @@ function mapTeamMember(entry: any): TeamMember | null {
     name,
     role,
     bio: typeof bio === 'string' ? bio : undefined,
+    h1,
     order: typeof order === 'number' ? order : undefined,
     photo: photoFile
       ? {
