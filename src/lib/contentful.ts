@@ -254,3 +254,13 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
     return [];
   }
 }
+
+function normalizeNameToSlug(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | null> {
+  const members = await getTeamMembers();
+  const normalizedSlug = slug.toLowerCase();
+  return members.find(member => normalizeNameToSlug(member.name) === normalizedSlug) || null;
+}

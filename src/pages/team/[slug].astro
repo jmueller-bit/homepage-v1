@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import { getTeamMemberBySlug, getTeamMembers } from '../../lib/contentful';
+
+const { slug } = Astro.params;
+const member = await getTeamMemberBySlug(slug!);
+
+if (!member) {
+  return Astro.redirect('/ueber-uns');
+}
+
+// Get all members for the sidebar/back navigation
+const allMembers = await getTeamMembers();
+---
+
+<BaseLayout title={`${member.name} | Team | Astrid Lindgren Zentrum`}>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <a href="/ueber-uns" class="back-link">← Zurück zum Team</a>
+  </div>
+  
+  <Section title={member.name} variant="alt">
+    <div class="member-detail">
+      <div class="member-photo-section">
+        {member.photo ? (
+          <div class="member-photo-large">
+            <img src={member.photo.url} alt={member.name} />
+          </div>
+        ) : (
+          <div class="member-photo-placeholder-large">
+            <span>{member.name.charAt(0)}</span>
+          </div>
+        )}
+      </div>
+      
+      <div class="member-info-section">
+        <h2 class="member-role">{member.role}</h2>
+        {member.bio && (
+          <div class="member-bio-full">
+            {member.bio.split('\n').map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </Section>
+  
+  {allMembers.length > 1 && (
+    <Section title="Weitere Teammitglieder">
+      <div class="other-members">
+        {allMembers
+          .filter(m => m.id !== member.id)
+          .slice(0, 3)
+          .map((otherMember) => {
+            const otherSlug = otherMember.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            return (
+              <a href={`/team/${otherSlug}`} class="other-member-card">
+                {otherMember.photo ? (
+                  <div class="other-member-photo">
+                    <img src={otherMember.photo.url} alt={otherMember.name} loading="lazy" />
+                  </div>
+                ) : (
+                  <div class="other-member-photo-placeholder">
+                    <span>{otherMember.name.charAt(0)}</span>
+                  </div>
+                )}
+                <h4>{otherMember.name}</h4>
+                <p>{otherMember.role}</p>
+              </a>
+            );
+          })}
+      </div>
+    </Section>
+  )}
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  
+  .member-detail {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .member-detail {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+  
+  .member-photo-large {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .member-photo-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .member-photo-placeholder-large {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .member-role {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .member-bio-full {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-gray-600);
+  }
+  
+  .member-bio-full p {
+    margin-bottom: 1rem;
+  }
+  
+  .other-members {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .other-member-card {
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .other-member-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .other-member-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 1rem;
+  }
+  
+  .other-member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .other-member-photo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin: 0 auto 1rem;
+  }
+  
+  .other-member-card h4 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--color-gray-700);
+  }
+  
+  .other-member-card p {
+    font-size: 0.875rem;
+    color: var(--color-gray-500);
+  }
+</style>

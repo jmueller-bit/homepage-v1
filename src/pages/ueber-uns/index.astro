@@ -37,7 +37,7 @@ const teamMembers = await getTeamMembers();
         {teamMembers.length > 0 ? (
           <div class="team-grid" style="margin-top: var(--space-6);">
             {teamMembers.map((member) => (
-              <div class="team-card">
+              <a href={`/team/${member.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`} class="team-card">
                 {member.photo ? (
                   <div class="team-photo">
                     <img src={member.photo.url} alt={member.name} loading="lazy" />
@@ -52,7 +52,7 @@ const teamMembers = await getTeamMembers();
                   <p class="team-role">{member.role}</p>
                   {member.bio && <p class="team-bio">{member.bio}</p>}
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         ) : (
@@ -78,6 +78,7 @@ const teamMembers = await getTeamMembers();
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
   }
 
   .team-card:hover {
