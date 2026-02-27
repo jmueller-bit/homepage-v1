@@ -64,7 +64,7 @@ const navItems = [
       <span>Astrid Lindgren Zentrum</span>
     </a>
 
-    <nav class="nav-main">
+    <nav class="nav-main" id="nav-main">
       {navItems.map((item) => (
         item.children ? (
           <div class="nav-item">
@@ -87,7 +87,7 @@ const navItems = [
       ))}
     </nav>
 
-    <button class="menu-toggle" aria-label="Menü öffnen" id="menu-toggle">
+    <button class="menu-toggle" aria-label="Menü öffnen" id="menu-toggle" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
@@ -98,8 +98,33 @@ const navItems = [
 <script>
   // Mobile menu toggle functionality
   const menuToggle = document.getElementById('menu-toggle');
+  const navMain = document.getElementById('nav-main');
+  const header = document.getElementById('header');
+  
   menuToggle?.addEventListener('click', () => {
-    // Mobile menu implementation (can be expanded later)
-    console.log('Mobile menu toggle');
+    const isOpen = navMain?.classList.toggle('nav-open');
+    menuToggle?.classList.toggle('active');
+    menuToggle?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    header?.classList.toggle('header-open');
+  });
+  
+  // Close menu when clicking on a link (for mobile)
+  navMain?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMain?.classList.remove('nav-open');
+      menuToggle?.classList.remove('active');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      header?.classList.remove('header-open');
+    });
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!header?.contains(e.target as Node)) {
+      navMain?.classList.remove('nav-open');
+      menuToggle?.classList.remove('active');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      header?.classList.remove('header-open');
+    }
   });
 </script>

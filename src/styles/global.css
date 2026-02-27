@@ -831,3 +831,114 @@ a:hover {
 .footer-legal a {
   font-size: var(--text-sm);
 }
+
+/* ========================================
+   MOBILE NAVIGATION
+   ======================================== */
+
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0 1rem;
+  }
+
+  .nav-main {
+    display: none;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-white);
+    flex-direction: column;
+    padding: 2rem;
+    gap: 0;
+    overflow-y: auto;
+    z-index: 999;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .nav-main.nav-open {
+    display: flex;
+  }
+
+  .nav-main .nav-link {
+    font-size: var(--text-lg);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-gray-200);
+    width: 100%;
+  }
+
+  .nav-main .nav-item {
+    width: 100%;
+  }
+
+  .nav-main .nav-dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    background: var(--color-gray-100);
+    margin: 0;
+    padding: 0.5rem 1rem;
+    display: none;
+    min-width: auto;
+  }
+
+  .nav-main .nav-item:hover .nav-dropdown,
+  .nav-main .nav-item:focus-within .nav-dropdown {
+    display: block;
+  }
+
+  .nav-main .nav-dropdown a {
+    padding: 0.75rem 0;
+  }
+
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1000;
+  }
+
+  .menu-toggle span {
+    width: 30px;
+    height: 3px;
+    background: var(--color-gray-700);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  .hero-title {
+    font-size: var(--text-3xl);
+  }
+
+  .section-title {
+    font-size: var(--text-2xl);
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
