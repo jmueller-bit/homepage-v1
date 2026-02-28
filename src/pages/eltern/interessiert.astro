@@ -1,13 +1,279 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
 ---
 
-<BaseLayout title="Interessiert?">
+<BaseLayout title="Anmeldung">
   <Hero
-    title="Der erste <span class='hero-title-accent'>Schritt</span>"
-    description="Sie interessieren sich für einen Platz am ALZ? Hier finden Sie den Weg zu uns."
-    badge="Interesse & Aufnahme"
-    imagePlaceholder="INTERESSIERT"
+    title="<span class='hero-title-accent'>Anmeldung</span>"
+    description="Wir begleiten Sie und Ihr Kind auf dem Weg zu uns - Schritt für Schritt"
+    badge="Schule"
   />
+
+  <Section>
+    <div class="anmeldung-grid">
+      <!-- Left Column: Informationen -->
+      <div class="info-column">
+        <div class="info-card">
+          <h2>Informationen</h2>
+          <p class="intro-text">
+            Die erste Kontaktaufnahme kann telefonisch, per E-Mail, an einem Tag der offenen Tür, 
+            einem Informationsabend oder ähnlichem erfolgen.
+          </p>
+          <p class="contact-hint">
+            Unsere Kontaktdaten finden Sie unten oder auf der <a href="/kontakt">Kontaktseite</a>.
+          </p>
+
+          <div class="wichtig-box">
+            <h3>Wichtige Information:</h3>
+            <p>
+              Anmeldungen für das neue Schuljahr sind grundsätzlich bis März möglich. 
+              Nach Rücksprache ist auch eine Anmeldung im laufenden Schuljahr möglich.
+            </p>
+            <p>
+              Für ein Erstgespräch oder bei Interesse an einer Hospitation vereinbaren Sie bitte einen Termin.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Termine -->
+      <div class="termine-column">
+        <div class="termine-card">
+          <h2>Termine für Informationsveranstaltungen</h2>
+          
+          <div class="termin-item">
+            <div class="termin-icon">🏫</div>
+            <div class="termin-content">
+              <h3>Tage der offenen Tür</h3>
+              <p>Oktober und März - jeweils ein Tag im Schuljahr</p>
+            </div>
+          </div>
+
+          <div class="termin-item">
+            <div class="termin-icon">📅</div>
+            <div class="termin-content">
+              <h3>Info-Nachmittage</h3>
+              <p>Regelmäßig im Schuljahr - Termine unter <a href="/schulleben/aktuelles">Aktuelles</a></p>
+            </div>
+          </div>
+
+          <div class="termin-item">
+            <div class="termin-icon">👥</div>
+            <div class="termin-content">
+              <h3>Persönliche Termine</h3>
+              <p>Nach Vereinbarung für Erstgespräche und Hospitationen</p>
+            </div>
+          </div>
+
+          <p class="termine-hinweis">
+            Aktuelle Termine finden Sie unter <a href="/schulleben/aktuelles">Aktuelles</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- CTA Section -->
+  <Section variant="alt">
+    <div class="cta-section">
+      <h2>Wir freuen uns auf Sie!</h2>
+      <p class="cta-text">
+        Beginnen Sie jetzt den Weg zu einer ganzheitlichen Bildung für Ihr Kind. 
+        Kontaktieren Sie uns für ein Erstgespräch.
+      </p>
+      <a href="/kontakt" class="btn btn-primary btn-lg">Kontakt aufnehmen</a>
+    </div>
+  </Section>
+
+  <!-- Back Link -->
+  <Section>
+    <div class="back-link">
+      <a href="/schule" class="btn btn-outline">← Zurück zur Schule-Übersicht</a>
+    </div>
+  </Section>
 </BaseLayout>
+
+<style>
+  .anmeldung-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 968px) {
+    .anmeldung-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .info-card,
+  .termine-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    height: 100%;
+  }
+
+  .info-card h2,
+  .termine-card h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-gray-700);
+    margin-bottom: 1rem;
+  }
+
+  .contact-hint {
+    color: var(--color-gray-600);
+    margin-bottom: 2rem;
+  }
+
+  .contact-hint a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .wichtig-box {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .wichtig-box h3 {
+    color: #92400e;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .wichtig-box p {
+    color: #92400e;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .wichtig-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  .termin-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-gray-100);
+  }
+
+  .termin-item:last-child {
+    border-bottom: none;
+  }
+
+  .termin-icon {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .termin-content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.25rem;
+  }
+
+  .termin-content p {
+    color: var(--color-gray-600);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .termin-content a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .termine-hinweis {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--color-gray-100);
+    color: var(--color-gray-600);
+    font-size: 0.95rem;
+  }
+
+  .termine-hinweis a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .cta-section {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1rem;
+  }
+
+  .cta-text {
+    font-size: 1.15rem;
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .back-link {
+    text-align: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-gray-300);
+    color: var(--color-gray-700);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+  }
+</style>
