@@ -102,13 +102,20 @@ const categories = [...new Set(images.map(img => img.category || 'Allgemein'))];
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ images: JSON.stringify(images), categories: JSON.stringify(categories) }}>
+<script is:inline define:vars={{ imagesData: JSON.stringify(images), categoriesData: JSON.stringify(categories) }}>
+  // Parse JSON data
+  const images = JSON.parse(imagesData);
+  const categories = JSON.parse(categoriesData);
+  
   // Debug info
   console.log('Gallery loaded with', images.length, 'images');
   console.log('Categories:', categories);
+  console.log('First image:', images[0]);
   
   let currentIndex = 0;
   let filteredImages = [...images];
+  
+  console.log('Initial filteredImages length:', filteredImages.length);
 
   // Filter functionality
   document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -125,6 +132,8 @@ const categories = [...new Set(images.map(img => img.category || 'Allgemein'))];
       } else {
         filteredImages = images.filter(img => (img.category || 'Allgemein') === filter);
       }
+      
+      console.log('Filter changed to:', filter, '- showing', filteredImages.length, 'images');
       
       // Show/hide gallery items
       document.querySelectorAll('.gallery-item').forEach(item => {
@@ -144,18 +153,29 @@ const categories = [...new Set(images.map(img => img.category || 'Allgemein'))];
     
     const index = parseInt(item.dataset.index);
     console.log('Clicked image index:', index);
+    console.log('Current filteredImages length:', filteredImages.length);
     
-    // Find index in filtered images
-    const image = images[index];
-    if (!image) {
+    // Find the image that was clicked
+    const clickedImage = images[index];
+    if (!clickedImage) {
       console.error('Image not found at index', index);
       return;
     }
     
-    currentIndex = filteredImages.findIndex(img => img.id === image.id);
-    if (currentIndex === -1) currentIndex = 0;
+    console.log('Clicked image:', clickedImage);
+    console.log('Image ID:', clickedImage.id);
     
-    console.log('Opening lightbox at index:', currentIndex, 'Image:', image.title);
+    // Find index in filtered images by ID
+    currentIndex = filteredImages.findIndex(img => img.id === clickedImage.id);
+    
+    console.log('Found index in filteredImages:', currentIndex);
+    
+    if (currentIndex === -1) {
+      console.warn('Image not found in filtered images, showing first image');
+      currentIndex = 0;
+    }
+    
+    console.log('Opening lightbox at index:', currentIndex, 'of', filteredImages.length);
     openLightbox();
   });
 
