@@ -60,7 +60,7 @@ const allImages = images; // Flat array for lightbox
             const categoryImages = imagesByCategory[category];
             const coverImage = categoryImages[0];
             return (
-              <div class="album-card" data-category={category} onclick={`openAlbum('${category}')`}>
+              <div class="album-card" data-category={category} data-action="open-album">
                 <div class="album-cover">
                   <div class="skeleton-loader" data-skeleton></div>
                   <img 
@@ -92,7 +92,7 @@ const allImages = images; // Flat array for lightbox
             class="masonry-item" 
             data-category={image.category || 'Allgemein'}
             data-index={index}
-            onclick={`openLightbox(${index})`}
+            data-action="open-lightbox"
           >
             <div class="skeleton-loader skeleton-masonry" data-skeleton></div>
             <img 
@@ -175,12 +175,12 @@ const allImages = images; // Flat array for lightbox
     </div>
 
     <!-- Thumbnail Strip -->
-    <div class="thumbnail-strip">
+    <div class="thumbnail-strip" id="thumbnailStrip">
       {allImages.map((image, index) => (
         <div 
           class="thumbnail" 
           data-index={index}
-          onclick={`goToImage(${index})`}
+          data-action="go-to-image"
         >
           <img src={image.src} alt={image.alt} loading="lazy" />
         </div>
@@ -211,6 +211,45 @@ const allImages = images; // Flat array for lightbox
   let startX, startY, translateX = 0, translateY = 0;
   let filteredImages = [...allImages];
   let currentFilter = 'all';
+
+  // Event Delegation - Handle clicks on album cards, masonry items, and thumbnails
+  document.addEventListener('click', (e) => {
+    // Check for album card click
+    const albumCard = e.target.closest('[data-action="open-album"]');
+    if (albumCard) {
+      e.preventDefault();
+      e.stopPropagation();
+      const category = albumCard.dataset.category;
+      if (category) {
+        openAlbum(category);
+      }
+      return;
+    }
+    
+    // Check for masonry item click
+    const masonryItem = e.target.closest('[data-action="open-lightbox"]');
+    if (masonryItem) {
+      e.preventDefault();
+      e.stopPropagation();
+      const index = parseInt(masonryItem.dataset.index);
+      if (!isNaN(index)) {
+        openLightbox(index);
+      }
+      return;
+    }
+
+    // Check for thumbnail click
+    const thumbnail = e.target.closest('[data-action="go-to-image"]');
+    if (thumbnail) {
+      e.preventDefault();
+      e.stopPropagation();
+      const index = parseInt(thumbnail.dataset.index);
+      if (!isNaN(index)) {
+        goToImage(index);
+      }
+      return;
+    }
+  });
 
   // Filter functionality
   document.querySelectorAll('.filter-btn').forEach(btn => {
