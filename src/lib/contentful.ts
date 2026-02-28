@@ -59,6 +59,7 @@ export type TeamMember = {
   name: string;
   role: string;
   bio?: unknown; // RichText
+  h1?: string;
   order?: number;
   photo?: {
     url: string;
@@ -180,6 +181,7 @@ function mapTeamMember(entry: any): TeamMember | null {
   const name = fields.name;
   const role = fields.funktion;
   const bio = fields.beschreibung;
+  const h1 = fields.h1;
   const order = fields.reihenfolge;
   const photoAsset = fields.foto;
 
@@ -192,6 +194,7 @@ function mapTeamMember(entry: any): TeamMember | null {
     name,
     role,
     bio,
+    h1,
     order: typeof order === 'number' ? order : undefined,
     photo: photoFile
       ? {

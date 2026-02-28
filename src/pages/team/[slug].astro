@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import { getTeamMemberBySlug, getTeamMembers } from '../../lib/contentful';
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 
 const { slug } = Astro.params;
 const member = await getTeamMemberBySlug(slug!);
@@ -12,6 +13,19 @@ if (!member) {
 
 // Get all members for the sidebar/back navigation
 const allMembers = await getTeamMembers();
+
+// Helper function to render RichText
+function renderRichText(document: unknown): string {
+  if (!document) return '';
+  try {
+    return documentToHtmlString(document as any);
+  } catch (e) {
+    console.error('Error rendering rich text:', e);
+    return '';
+  }
+}
+
+const bioHtml = renderRichText(member.bio);
 ---
 
 <BaseLayout title={`${member.name} | Team | Astrid Lindgren Zentrum`}>
@@ -38,12 +52,8 @@ const allMembers = await getTeamMembers();
         {member.h1 && (
           <h3 class="member-h1">{member.h1}</h3>
         )}
-        {member.bio && (
-          <div class="member-bio-full">
-            {member.bio.split('\n').map((paragraph) => (
-              <p>{paragraph}</p>
-            ))}
-          </div>
+        {bioHtml && (
+          <div class="member-bio-full" set:html={bioHtml}></div>
         )}
       </div>
     </div>
@@ -138,7 +148,7 @@ const allMembers = await getTeamMembers();
   .member-role {
     font-size: 1.5rem;
     color: var(--color-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     font-weight: 600;
   }
   
@@ -146,18 +156,72 @@ const allMembers = await getTeamMembers();
     font-size: 1.25rem;
     color: var(--color-gray-700);
     font-weight: 600;
-    margin: -1rem 0 1.5rem 0;
+    margin-bottom: 1.5rem;
     font-style: italic;
   }
   
+  /* Bio content with styled headings */
   .member-bio-full {
     font-size: 1.125rem;
     line-height: 1.8;
-    color: var(--color-gray-600);
+    color: var(--color-gray-700);
   }
   
-  .member-bio-full p {
+  .member-bio-full :global(h1) {
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin: 2rem 0 1rem 0;
+    font-weight: 700;
+    border-bottom: 3px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+  }
+  
+  .member-bio-full :global(h2) {
+    font-size: 1.5rem;
+    color: var(--color-secondary, #4a90a4);
+    margin: 1.75rem 0 0.875rem 0;
+    font-weight: 600;
+    border-left: 4px solid var(--color-secondary, #4a90a4);
+    padding-left: 1rem;
+  }
+  
+  .member-bio-full :global(h3) {
+    font-size: 1.25rem;
+    color: var(--color-accent, #6b8e23);
+    margin: 1.5rem 0 0.75rem 0;
+    font-weight: 600;
+  }
+  
+  .member-bio-full :global(p) {
     margin-bottom: 1rem;
+  }
+  
+  .member-bio-full :global(ul),
+  .member-bio-full :global(ol) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .member-bio-full :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .member-bio-full :global(strong) {
+    color: var(--color-gray-900);
+    font-weight: 600;
+  }
+  
+  .member-bio-full :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  
+  .member-bio-full :global(blockquote) {
+    border-left: 4px solid var(--color-primary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-gray-600);
+    font-style: italic;
   }
   
   .other-members {
