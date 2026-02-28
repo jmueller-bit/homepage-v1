@@ -3,6 +3,9 @@ import { createClient } from 'contentful';
 export const NEWS_CONTENT_TYPE = 'newsArtikel';
 export const GALLERY_CONTENT_TYPE = 'galleryImage';
 export const TEAM_CONTENT_TYPE = 'teamMitglied';
+export const JOB_CONTENT_TYPE = 'stellen';
+export const SCHULE_ALLGEMEIN_CONTENT_TYPE = 'schuleAllgemein';
+export const SCHULE_EVENT_CONTENT_TYPE = 'schuleEvent';
 
 // Delivery Client (read-only, für öffentliche Website)
 export const contentfulClient = createClient({
@@ -35,6 +38,7 @@ export type NewsEntry = {
     height?: number;
   };
   category?: string;
+  author?: string;
 };
 
 export type GalleryImage = {
@@ -47,20 +51,32 @@ export type GalleryImage = {
   description?: string;
   width?: number;
   height?: number;
+  images?: GalleryImage[]; // Ein Eintrag kann mehrere Bilder haben
 };
 
 export type TeamMember = {
   id: string;
   name: string;
   role: string;
-  bio?: string;
-  h1?: string;
+  bio?: unknown; // RichText
   order?: number;
   photo?: {
     url: string;
     width?: number;
     height?: number;
   };
+};
+
+export type Job = {
+  id: string;
+  title: string;
+  descriptionShort: string;
+  descriptionLong?: unknown;
+  media?: {
+    url: string;
+    title?: string;
+  }[];
+  order?: number;
 };
 
 function mapNewsEntry(entry: any): NewsEntry | null {
@@ -73,6 +89,7 @@ function mapNewsEntry(entry: any): NewsEntry | null {
   const content = fields.inhalt || fields.content;
   const category = fields.kategorie || fields.category;
   const imageAsset = fields.titelbild || fields.coverImage;
+  const author = fields.autor || fields.author;
 
   if (!title || !slug || !date) {
     return null;
@@ -88,6 +105,7 @@ function mapNewsEntry(entry: any): NewsEntry | null {
     date,
     content,
     category,
+    author: typeof author === 'string' ? author : undefined,
     image: imageFile
       ? {
         url: imageFile.url?.startsWith('http') ? imageFile.url : `https:${imageFile.url}`,
@@ -106,54 +124,66 @@ function mapGalleryImage(entry: any): GalleryImage | null {
   const order = fields.reihenfolge ?? 0;
   
   const bildArray = fields.bild;
-  let imageAsset = null;
   
-  if (Array.isArray(bildArray) && bildArray.length > 0) {
-    imageAsset = bildArray[0];
-  }
-
-  const imageFile = imageAsset?.fields?.file;
-
-  if (!title || !imageFile) {
+  if (!title || !Array.isArray(bildArray) || bildArray.length === 0) {
     return null;
   }
 
-  const imageUrl = imageFile.url?.startsWith('http') ? imageFile.url : `https:${imageFile.url}`;
+  // First image is the main image
+  const mainImageAsset = bildArray[0];
+  const mainImageFile = mainImageAsset?.fields?.file;
+  
+  if (!mainImageFile) {
+    return null;
+  }
+
+  const mainImageUrl = mainImageFile.url?.startsWith('http') ? mainImageFile.url : `https:${mainImageFile.url}`;
+
+  // If there are multiple images, create an images array
+  const images: GalleryImage[] = [];
+  if (bildArray.length > 1) {
+    for (let i = 1; i < bildArray.length; i++) {
+      const asset = bildArray[i];
+      const file = asset?.fields?.file;
+      if (file) {
+        const url = file.url?.startsWith('http') ? file.url : `https:${file.url}`;
+        images.push({
+          id: `${entry.sys.id}-${i}`,
+          title: `${title} (${i + 1}/${bildArray.length})`,
+          src: url,
+          alt: title,
+          category,
+          order: (typeof order === 'number' ? order : 0) + i * 0.1,
+          width: file.details?.image?.width,
+          height: file.details?.image?.height,
+        });
+      }
+    }
+  }
 
   return {
     id: entry.sys.id,
     title,
-    src: imageUrl,
+    src: mainImageUrl,
     alt: title,
     category,
     order: typeof order === 'number' ? order : 0,
-    width: imageFile.details?.image?.width,
-    height: imageFile.details?.image?.height,
+    width: mainImageFile.details?.image?.width,
+    height: mainImageFile.details?.image?.height,
+    images: images.length > 0 ? images : undefined,
   };
 }
 
 function mapTeamMember(entry: any): TeamMember | null {
   const fields = entry.fields as Record<string, any>;
 
-  const name = fields.name || fields.titel || fields.vorname || fields.fullName;
-  const role = fields.funktion || fields.role || fields.rolle || fields.position;
-  let bio = fields.bio || fields.beschreibung || fields.text;
-  const order = fields.order ?? fields.reihenfolge;
-  const photoAsset = fields.photo || fields.foto || fields.bild;
-  const h1 = fields.h1 || fields.ueberschrift || fields.headline || fields.subtitle;
+  const name = fields.name;
+  const role = fields.funktion;
+  const bio = fields.beschreibung;
+  const order = fields.reihenfolge;
+  const photoAsset = fields.foto;
 
   if (!name || !role) return null;
-
-  // Extract simple text if bio is a Rich Text object
-  if (bio && typeof bio === 'object' && bio.nodeType === 'document') {
-    try {
-      bio = bio.content
-        ?.map((c: any) => c.content?.map((cc: any) => cc.value || '').join(''))
-        .join('\n');
-    } catch (e) {
-      bio = '';
-    }
-  }
 
   const photoFile = photoAsset?.fields?.file;
 
@@ -161,8 +191,7 @@ function mapTeamMember(entry: any): TeamMember | null {
     id: entry.sys.id,
     name,
     role,
-    bio: typeof bio === 'string' ? bio : undefined,
-    h1,
+    bio,
     order: typeof order === 'number' ? order : undefined,
     photo: photoFile
       ? {
@@ -171,6 +200,36 @@ function mapTeamMember(entry: any): TeamMember | null {
         height: photoFile.details?.image?.height,
       }
       : undefined,
+  };
+}
+
+function mapJob(entry: any): Job | null {
+  const fields = entry.fields as Record<string, any>;
+
+  const title = fields.position || fields.titel || fields.title;
+  const descriptionShort = fields.beschreibungKurz || fields.descriptionShort || '';
+  const descriptionLong = fields.beschreibungLang || fields.descriptionLong;
+  const order = fields.reihenfolge ?? fields.order;
+  const mediaAssets = fields.medien || fields.media;
+
+  if (!title) return null;
+
+  const media = Array.isArray(mediaAssets) 
+    ? mediaAssets.map((asset: any) => ({
+        url: asset?.fields?.file?.url?.startsWith('http') 
+          ? asset.fields.file.url 
+          : `https:${asset?.fields?.file?.url}`,
+        title: asset?.fields?.title,
+      })).filter((m: any) => m.url)
+    : undefined;
+
+  return {
+    id: entry.sys.id,
+    title,
+    descriptionShort: typeof descriptionShort === 'string' ? descriptionShort : '',
+    descriptionLong,
+    media,
+    order: typeof order === 'number' ? order : undefined,
   };
 }
 
@@ -266,4 +325,90 @@ export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | nu
   const members = await getTeamMembers();
   const normalizedSlug = slug.toLowerCase();
   return members.find(member => normalizeNameToSlug(member.name) === normalizedSlug) || null;
+}
+
+export async function getJobs(): Promise<Job[]> {
+  const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+  if (!spaceId || spaceId === 'TODO') {
+    return [];
+  }
+
+  try {
+    const entries = await contentfulClient.getEntries({
+      content_type: JOB_CONTENT_TYPE,
+      limit: 50,
+    });
+
+    const mapped = entries.items.map(mapJob).filter(Boolean) as Job[];
+    return mapped.sort((a, b) => {
+      const aOrder = a.order ?? Number.MAX_SAFE_INTEGER;
+      const bOrder = b.order ?? Number.MAX_SAFE_INTEGER;
+      return aOrder - bOrder;
+    });
+  } catch (error: any) {
+    console.error('Error fetching jobs:', error);
+    return [];
+  }
+}
+
+// Hilfsfunktion, die alle Bilder (inkl. zusätzliche) flach zurückgibt
+export async function getAllGalleryImages(limit = 100): Promise<GalleryImage[]> {
+  const entries = await getGalleryImages(limit);
+  const allImages: GalleryImage[] = [];
+  
+  for (const entry of entries) {
+    allImages.push(entry);
+    if (entry.images) {
+      allImages.push(...entry.images);
+    }
+  }
+  
+  return allImages.sort((a, b) => a.order - b.order);
+}
+
+// Typ für Schule-Allgemein und Schule-Events (verwenden gleiche Struktur wie Gallery)
+export type SchuleImage = GalleryImage;
+
+export async function getSchuleAllgemeinImages(limit = 50): Promise<SchuleImage[]> {
+  const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+  if (!spaceId || spaceId === 'TODO') {
+    return [];
+  }
+
+  try {
+    const entries = await contentfulClient.getEntries({
+      content_type: SCHULE_ALLGEMEIN_CONTENT_TYPE,
+      order: ['fields.reihenfolge'],
+      limit,
+      include: 1,
+    });
+
+    return (entries.items.map(mapGalleryImage).filter(Boolean) as GalleryImage[])
+      .sort((a, b) => a.order - b.order);
+  } catch (error: any) {
+    console.error('Error fetching schule allgemein images:', error);
+    return [];
+  }
+}
+
+export async function getSchuleEventImages(limit = 50): Promise<SchuleImage[]> {
+  const spaceId = import.meta.env.CONTENTFUL_SPACE_ID;
+  if (!spaceId || spaceId === 'TODO') {
+    return [];
+  }
+
+  try {
+    const entries = await contentfulClient.getEntries({
+      content_type: SCHULE_EVENT_CONTENT_TYPE,
+      order: ['fields.reihenfolge'],
+      limit,
+      include: 1,
+    });
+
+    return (entries.items.map(mapGalleryImage).filter(Boolean) as GalleryImage[])
+      .sort((a, b) => a.order - b.order);
+  } catch (error: any) {
+    console.error('Error fetching schule event images:', error);
+    return [];
+  }
 }

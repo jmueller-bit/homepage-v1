@@ -1,43 +1,542 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 ---
 
 <BaseLayout title="Kontakt">
-  <Section 
-    title="Kontaktieren Sie uns" 
-    description="Wir freuen uns auf Ihre Nachricht oder Ihren Besuch."
-  >
-    <div class="grid grid-2">
+  <Hero
+    title="Kontakt"
+    description="Wir freuen uns auf Ihre Nachricht"
+    badge="Kontakt"
+  />
+
+  <Section>
+    <div class="contact-grid">
+      <!-- Left Column: Contact Information -->
       <div class="contact-info">
-        <h3>Astrid Lindgren Zentrum</h3>
-        <p><strong>Adresse:</strong><br />Mustergasse 123, 1230 Wien</p>
-        <p><strong>Telefon:</strong><br /><a href="tel:+43123456789">+43 1 234 567 89</a></p>
-        <p><strong>E-Mail:</strong><br /><a href="mailto:office@astrid-lindgren-zentrum.at">office@astrid-lindgren-zentrum.at</a></p>
+        <div class="info-header">
+          <h2>Astrid Lindgren Zentrum</h2>
+          <p class="subtitle">Verein für Pädagogik und Kultur</p>
+          <p class="zvr">ZVR: 960385266</p>
+        </div>
+
+        <h3 class="section-title">Kontaktinformationen</h3>
         
-        <div style="margin-top: var(--space-8); padding: var(--space-6); background: var(--color-primary-light); border-radius: var(--radius-md);">
-          <h4>Öffnungszeiten</h4>
-          <p>Montag – Freitag: 08:00 – 16:00 Uhr</p>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <h4>Adresse</h4>
+              <p>Breitenfurter Straße 401-413/1/R02<br/>1230 Wien</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <h4>Telefon</h4>
+              <a href="tel:+4318874053">+43 1 887 40 53</a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <h4>E-Mail</h4>
+              <a href="mailto:office@astrid-lindgren-zentrum.at">office@astrid-lindgren-zentrum.at</a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="info-content">
+              <h4>Öffnungszeiten</h4>
+              <p>Mo-Fr: 08:00 - 17:00 Uhr</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="anmeldung-section">
+          <h3 class="section-title">Anmeldung</h3>
+          <p>Für die Anmeldung Ihres Kindes kontaktieren Sie uns bitte telefonisch oder per E-Mail. Wir vereinbaren dann einen persönlichen Termin für ein Kennenlerngespräch.</p>
+          <p class="anmeldung-hinweis">Die Anmeldung für das nächste Schuljahr beginnt jeweils im Jänner.</p>
+        </div>
+
+        <div class="anfahrt-section">
+          <h3 class="section-title anfahrt-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="16" height="16" x="4" y="3" rx="2"/>
+              <path d="M4 11h16"/>
+              <path d="M12 3v8"/>
+              <path d="m8 19-2 3"/>
+              <path d="m18 22-2-3"/>
+              <path d="M8 15h.01"/>
+              <path d="M16 15h.01"/>
+            </svg>
+            So kommen Sie zu uns
+          </h3>
+          
+          <div class="transport-card">
+            <div class="transport-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="16" height="16" x="4" y="3" rx="2"/>
+                <path d="M4 11h16"/>
+                <path d="M12 3v8"/>
+                <path d="m8 19-2 3"/>
+                <path d="m18 22-2-3"/>
+                <path d="M8 15h.01"/>
+                <path d="M16 15h.01"/>
+              </svg>
+            </div>
+            <div class="transport-content">
+              <h4>Öffentliche Verkehrsmittel</h4>
+              <p><strong>S-Bahn:</strong> Bahnhof Liesing</p>
+              <p><strong>Straßenbahn:</strong> Linie 60</p>
+              <p><strong>Bus:</strong> 60A, 253, 259, 354</p>
+            </div>
+          </div>
+
+          <div class="hinweis-box">
+            <p><strong>Hinweis:</strong> Der Eingang befindet sich an der Breitenfurter Straße fast unter dem Aquädukt (an der Ecke), neben dem Städtischen Kindergarten.</p>
+          </div>
         </div>
       </div>
-      
-      <div class="contact-form-placeholder" style="padding: var(--space-8); background: var(--color-gray-100); border-radius: var(--radius-md);">
-        <h3>Senden Sie uns eine Anfrage</h3>
-        <p style="margin-bottom: var(--space-6);">Nutzen Sie unser Kontaktformular für allgemeine Anfragen oder zur Terminvereinbarung.</p>
-        
-        <form style="display: flex; flex-direction: column; gap: var(--space-4);">
-          <input type="text" placeholder="Ihr Name" style="padding: var(--space-3); border: 1px solid var(--color-gray-300);" />
-          <input type="email" placeholder="Ihre E-Mail" style="padding: var(--space-3); border: 1px solid var(--color-gray-300);" />
-          <textarea placeholder="Ihre Nachricht" rows="5" style="padding: var(--space-3); border: 1px solid var(--color-gray-300);"></textarea>
-          <button type="submit" class="btn btn-primary" disabled>Nachricht senden (Demo)</button>
-        </form>
+
+      <!-- Right Column: Contact Form -->
+      <div class="contact-form-wrapper">
+        <div class="contact-form-card">
+          <h3>Nachricht senden</h3>
+          <form class="contact-form" action="/api/contact" method="POST">
+            <div class="form-group">
+              <label for="name">Name *</label>
+              <input type="text" id="name" name="name" placeholder="Ihr Name" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="email">E-Mail *</label>
+              <input type="email" id="email" name="email" placeholder="ihre@email.at" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="betreff">Betreff</label>
+              <input type="text" id="betreff" name="betreff" placeholder="Anmeldung / Frage / ..." />
+            </div>
+            
+            <div class="form-group">
+              <label for="nachricht">Nachricht *</label>
+              <textarea id="nachricht" name="nachricht" rows="5" placeholder="Ihre Nachricht an uns..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 2-7 20-4-9-9-4Z"/>
+                <path d="M22 2 11 13"/>
+              </svg>
+              Nachricht senden
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </Section>
-  
-  <Section title="Anfahrt" variant="alt">
-    <div style="width: 100%; height: 400px; background: var(--color-gray-200); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg);">
-      <p style="font-weight: bold; color: var(--color-gray-500);">Hier wäre eine interaktive Google Maps Karte</p>
+
+  <!-- Google Maps Section -->
+  <Section variant="alt">
+    <h2 class="maps-title">So finden Sie uns</h2>
+    <div class="maps-container">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2693.627123456789!2d16.285417!3d48.140625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476d000000000000%3A0x0!2sBreitenfurter%20Stra%C3%9Fe%20401-413%2F1%2FR02%2C%201230%20Wien!5e0!3m2!1sde!2sat!4v1234567890000!5m2!1sde!2sat" 
+        width="100%" 
+        height="100%" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Standortkarte - Astrid Lindgren Zentrum"
+      ></iframe>
+    </div>
+    <div class="maps-links">
+      <a href="https://maps.app.goo.gl/RjBZcY1Tx31joX1e8" target="_blank" rel="noopener noreferrer" class="maps-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h6v6"/>
+          <path d="M10 14 21 3"/>
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        </svg>
+        In Google Maps öffnen
+      </a>
     </div>
   </Section>
 </BaseLayout>
+
+<style>
+  /* Grid Layout */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 968px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  }
+
+  /* Contact Info Section */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .info-header h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .info-header .subtitle {
+    color: var(--color-gray-600);
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .info-header .zvr {
+    color: var(--color-gray-400);
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1.5rem;
+  }
+
+  .anfahrt-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .anfahrt-title svg {
+    color: var(--color-primary);
+  }
+
+  /* Info Cards */
+  .info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .info-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .info-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .icon-wrapper {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary-light, rgba(var(--color-primary-rgb, 59, 130, 246), 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+  }
+
+  .icon-wrapper svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .info-content h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.25rem;
+  }
+
+  .info-content p,
+  .info-content a {
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    line-height: 1.5;
+    text-decoration: none;
+  }
+
+  .info-content a:hover {
+    color: var(--color-primary);
+  }
+
+  /* Anmeldung Section */
+  .anmeldung-section {
+    padding-top: 1rem;
+  }
+
+  .anmeldung-section p {
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .anmeldung-hinweis {
+    color: var(--color-gray-700);
+    font-weight: 500;
+  }
+
+  /* Anfahrt Section */
+  .anfahrt-section {
+    padding-top: 1rem;
+  }
+
+  .transport-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1rem;
+  }
+
+  .transport-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary-light, rgba(var(--color-primary-rgb, 59, 130, 246), 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+  }
+
+  .transport-content h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.5rem;
+  }
+
+  .transport-content p {
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    margin-bottom: 0.25rem;
+  }
+
+  .hinweis-box {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .hinweis-box p {
+    font-size: 0.9rem;
+    color: #92400e;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Contact Form */
+  .contact-form-wrapper {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .contact-form-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .contact-form-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-gray-700);
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-gray-200);
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 59, 130, 246), 0.1);
+  }
+
+  .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  .btn-submit svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Google Maps */
+  .maps-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .maps-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-height: 500px;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-gray-100);
+  }
+
+  @media (max-width: 768px) {
+    .maps-container {
+      aspect-ratio: 4/3;
+    }
+  }
+
+  .maps-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .maps-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    text-decoration: none;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .maps-link:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .maps-link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .contact-form-wrapper {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .contact-form-card {
+      padding: 1.5rem;
+    }
+  }
+</style>
