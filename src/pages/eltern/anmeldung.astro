@@ -4,15 +4,498 @@ import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 ---
 
-<BaseLayout title="Anmeldung & Kosten">
+<BaseLayout title="Anmeldung">
   <Hero
-    title="Ihr Kind am <span class='hero-title-accent'>ALZ</span>"
-    description="Hier finden Sie alle Informationen zum Anmeldeprozess, den Terminen und den finanziellen Rahmenbedingungen."
-    badge="Anmeldung"
-    imagePlaceholder="ANMELDUNG"
+    title="<span class='hero-title-accent'>Anmeldung</span>"
+    description="Wir begleiten Sie und Ihr Kind auf dem Weg zu uns - Schritt für Schritt"
+    badge="Schule"
   />
 
-  <Section title="Anmeldeprozess">
-    <p>Der Einstieg beginnt meist mit einem Informationsabend und einer Hospitation.</p>
+  <Section>
+    <div class="anmeldung-grid">
+      <!-- Left Column: Informationen -->
+      <div class="info-column">
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-icon">ℹ️</span>
+            <h2>Informationen</h2>
+          </div>
+          
+          <div class="card-content">
+            <h3>Infos zur Anmeldung</h3>
+            <p>
+              Die erste Kontaktaufnahme kann telefonisch, per E-Mail, an einem Tag der offenen Tür, 
+              einem Informationsabend oder ähnlichem erfolgen.
+            </p>
+            <p class="contact-hint">
+              Unsere Kontaktdaten finden Sie unten oder auf der <a href="/kontakt">Kontaktseite</a>.
+            </p>
+
+            <div class="highlight-box">
+              <h4>Wichtige Information:</h4>
+              <p>
+                Anmeldungen für das neue Schuljahr sind grundsätzlich bis März möglich. 
+                Nach Rücksprache ist auch eine Anmeldung im laufenden Schuljahr möglich.
+              </p>
+              <p>
+                Für ein Erstgespräch oder bei Interesse an einer Hospitation vereinbaren Sie bitte einen Termin.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Aufnahmeprozess & Termine -->
+      <div class="process-column">
+        <div class="process-card">
+          <div class="card-header">
+            <span class="card-icon">📋</span>
+            <h2>Aufnahmeprozess</h2>
+          </div>
+          
+          <div class="process-steps">
+            <div class="process-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Erstkontakt</h4>
+                <p>Telefonisch, per E-Mail oder bei einem Informationsabend</p>
+              </div>
+            </div>
+            
+            <div class="process-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Erstgespräch</h4>
+                <p>Persönliches Kennenlernen und Besichtigung der Schule</p>
+              </div>
+            </div>
+            
+            <div class="process-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Hospitation</h4>
+                <p>Ihr Kind besucht einen Tag die Schule</p>
+              </div>
+            </div>
+            
+            <div class="process-step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Anmeldung</h4>
+                <p>Verbindliche Anmeldung für das neue Schuljahr</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="termine-card">
+          <div class="card-header">
+            <span class="card-icon">📅</span>
+            <h2>Termine</h2>
+          </div>
+          
+          <h3>Termine für Informationsveranstaltungen</h3>
+          
+          <div class="termin-list">
+            <div class="termin-item">
+              <div class="termin-icon">🏫</div>
+              <div class="termin-content">
+                <h4>Tage der offenen Tür</h4>
+                <p>Oktober und März - jeweils ein Tag im Schuljahr</p>
+              </div>
+            </div>
+
+            <div class="termin-item">
+              <div class="termin-icon">📆</div>
+              <div class="termin-content">
+                <h4>Info-Nachmittage</h4>
+                <p>Regelmäßig im Schuljahr - Termine unter <a href="/schulleben/aktuelles">Aktuelles</a></p>
+              </div>
+            </div>
+
+            <div class="termin-item">
+              <div class="termin-icon">👥</div>
+              <div class="termin-content">
+                <h4>Persönliche Termine</h4>
+                <p>Nach Vereinbarung für Erstgespräche und Hospitationen</p>
+              </div>
+            </div>
+          </div>
+          
+          <p class="termine-hinweis">
+            Aktuelle Termine finden Sie unter <a href="/schulleben/aktuelles">Aktuelles</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Kontakt Section -->
+  <Section variant="alt">
+    <div class="kontakt-section">
+      <div class="kontakt-header">
+        <span class="kontakt-icon">📞</span>
+        <h2>Kontakt</h2>
+      </div>
+      
+      <div class="kontakt-grid">
+        <div class="kontakt-info">
+          <h3>Wir freuen uns auf Sie!</h3>
+          <p class="kontakt-text">
+            Beginnen Sie jetzt den Weg zu einer ganzheitlichen Bildung für Ihr Kind. 
+            Kontaktieren Sie uns für ein Erstgespräch.
+          </p>
+          <a href="/kontakt" class="btn btn-primary btn-lg">Kontakt aufnehmen</a>
+        </div>
+        
+        <div class="kontakt-details">
+          <div class="kontakt-item">
+            <span class="kontakt-label">Telefon:</span>
+            <a href="tel:+4318874053">+43 1 887 40 53</a>
+          </div>
+          <div class="kontakt-item">
+            <span class="kontakt-label">E-Mail:</span>
+            <a href="mailto:office@astrid-lindgren-zentrum.at">office@astrid-lindgren-zentrum.at</a>
+          </div>
+          <div class="kontakt-item">
+            <span class="kontakt-label">Adresse:</span>
+            <span>Breitenfurter Straße 401-413/1/R02<br>1230 Wien</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Back Link -->
+  <Section>
+    <div class="back-link">
+      <a href="/schule" class="btn btn-outline">← Zurück zur Schule-Übersicht</a>
+    </div>
   </Section>
 </BaseLayout>
+
+<style>
+  .anmeldung-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 968px) {
+    .anmeldung-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .info-card,
+  .process-card,
+  .termine-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-gray-100);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+  }
+
+  .card-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1rem;
+  }
+
+  .card-content p {
+    line-height: 1.7;
+    color: var(--color-gray-700);
+    margin-bottom: 1rem;
+  }
+
+  .contact-hint {
+    margin-bottom: 2rem;
+  }
+
+  .contact-hint a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #fcd34d;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .highlight-box h4 {
+    color: #92400e;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .highlight-box p {
+    color: #92400e;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .highlight-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Process Steps */
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .process-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .step-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.25rem;
+  }
+
+  .step-content p {
+    color: var(--color-gray-600);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* Termine */
+  .termine-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1.5rem;
+  }
+
+  .termin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .termin-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-gray-50);
+    border-radius: 0.5rem;
+  }
+
+  .termin-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .termin-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.25rem;
+  }
+
+  .termin-content p {
+    color: var(--color-gray-600);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .termin-content a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .termine-hinweis {
+    color: var(--color-gray-600);
+    font-size: 0.9rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-gray-200);
+  }
+
+  .termine-hinweis a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  /* Kontakt Section */
+  .kontakt-section {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .kontakt-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .kontakt-icon {
+    font-size: 2.5rem;
+  }
+
+  .kontakt-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin: 0;
+  }
+
+  .kontakt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .kontakt-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .kontakt-info h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1rem;
+  }
+
+  .kontakt-text {
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .kontakt-details {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .kontakt-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-gray-100);
+  }
+
+  .kontakt-item:last-child {
+    border-bottom: none;
+  }
+
+  .kontakt-label {
+    font-weight: 600;
+    color: var(--color-gray-700);
+    font-size: 0.9rem;
+  }
+
+  .kontakt-item a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+
+  .kontakt-item a:hover {
+    text-decoration: underline;
+  }
+
+  .kontakt-item span:last-child {
+    color: var(--color-gray-700);
+    line-height: 1.5;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-gray-300);
+    color: var(--color-gray-700);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+  }
+
+  /* Back Link */
+  .back-link {
+    text-align: center;
+  }
+</style>

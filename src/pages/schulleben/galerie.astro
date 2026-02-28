@@ -1,20 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
 import { getAllGalleryImages } from '../../lib/contentful';
 
 const images = await getAllGalleryImages(100);
 
-// Group images by category (Alben)
-const imagesByCategory = images.reduce((acc, img) => {
-  const cat = img.category || 'Allgemein';
-  if (!acc[cat]) acc[cat] = [];
-  acc[cat].push(img);
-  return acc;
-}, {} as Record<string, typeof images>);
-
-const categories = Object.keys(imagesByCategory);
-const allImages = images; // Flat array for lightbox
+// Get unique categories
+const categories = [...new Set(images.map(img => img.category || 'Allgemein'))];
 ---
 
 <BaseLayout title="Galerie">
@@ -22,19 +15,19 @@ const allImages = images; // Flat array for lightbox
     title="Bilder aus dem <span class='hero-title-accent'>Schulleben</span>"
     description="Eindrücke von unseren Projekten, Festen und Ausflügen."
     badge="Impressionen"
-    imagePlaceholder="GALERIE"
   />
 
-  <section class="gallery-section">
-    <div class="container">
-      <!-- Filter Buttons -->
-      <div class="filter-container">
-        <button class="filter-btn active" data-filter="all">
-          <span class="filter-icon">🖼️</span>
-          Alle
-          <span class="filter-count">({allImages.length})</span>
-        </button>
-        {categories.map((category) => (
+  <Section>
+    <!-- Filter Buttons -->
+    <div class="filter-container">
+      <button class="filter-btn active" data-filter="all">
+        <span class="filter-icon">🖼️</span>
+        Alle
+        <span class="filter-count">({images.length})</span>
+      </button>
+      {categories.map((category) => {
+        const count = images.filter(img => (img.category || 'Allgemein') === category).length;
+        return (
           <button class="filter-btn" data-filter={category}>
             <span class="filter-icon">
               {category === 'unterricht' ? '📚' : 
@@ -42,220 +35,85 @@ const allImages = images; // Flat array for lightbox
                category === 'sport' ? '⚽' : '📁'}
             </span>
             {category.charAt(0).toUpperCase() + category.slice(1)}
-            <span class="filter-count">({imagesByCategory[category].length})</span>
+            <span class="filter-count">({count})</span>
           </button>
-        ))}
-      </div>
+        );
+      })}
+    </div>
 
-      <!-- Album Grid (für Ordner/Alben-Struktur) -->
-      <div class="albums-grid" id="albumsGrid">
-        {categories.length === 0 ? (
-          <div class="empty-state">
-            <div class="empty-icon">📷</div>
-            <h3>Noch keine Bilder</h3>
-            <p>Bald gibt es hier Bilder zu sehen!</p>
-          </div>
-        ) : (
-          categories.map((category) => {
-            const categoryImages = imagesByCategory[category];
-            const coverImage = categoryImages[0];
-            return (
-              <div class="album-card" data-category={category} data-action="open-album">
-                <div class="album-cover">
-                  <div class="skeleton-loader" data-skeleton></div>
-                  <img 
-                    src={coverImage.src} 
-                    alt={category}
-                    loading="lazy"
-                    onload="this.previousElementSibling.style.display='none'"
-                  />
-                  <div class="album-overlay">
-                    <div class="album-icon">📂</div>
-                    <span class="album-open">Öffnen</span>
-                  </div>
-                  <div class="album-count">{categoryImages.length} Bilder</div>
-                </div>
-                <div class="album-info">
-                  <h3 class="album-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
-                  <p class="album-description">{categoryImages.length} Bilder in diesem Album</p>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-
-      <!-- Masonry Image Grid -->
-      <div class="masonry-grid" id="masonryGrid" style="display: none;">
-        {allImages.map((image, index) => (
+    <!-- Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+      {images.length === 0 ? (
+        <div class="empty-state">
+          <div class="empty-icon">📷</div>
+          <h3>Noch keine Bilder</h3>
+          <p>Bald gibt es hier Bilder zu sehen!</p>
+        </div>
+      ) : (
+        images.map((image, index) => (
           <div 
-            class="masonry-item" 
+            class="gallery-item" 
             data-category={image.category || 'Allgemein'}
             data-index={index}
-            data-action="open-lightbox"
           >
-            <div class="skeleton-loader skeleton-masonry" data-skeleton></div>
             <img 
               src={image.src} 
               alt={image.alt}
               loading="lazy"
-              class="masonry-img"
-              onload="this.previousElementSibling.style.display='none'; this.classList.add('loaded')"
+              class="gallery-img"
             />
-            <div class="masonry-overlay">
-              <div class="zoom-icon">🔍</div>
+            <div class="gallery-overlay">
               <span class="image-title">{image.title}</span>
+              <span class="image-category">{image.category || 'Allgemein'}</span>
             </div>
           </div>
-        ))}
-      </div>
+        ))
+      )}
     </div>
-  </section>
+  </Section>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="lightbox">
-    <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
-    
-    <!-- Close Button -->
-    <button class="lightbox-close" onclick="closeLightbox()">
+  <div id="lightbox" class="lightbox" style="display: none;">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Schließen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M18 6L6 18M6 6l12 12"/>
       </svg>
     </button>
-
-    <!-- Zoom Controls -->
-    <div class="zoom-controls">
-      <button class="zoom-btn" onclick="zoomIn()" title="Vergrößern">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
-          <path d="M11 8v6M8 11h6"/>
-        </svg>
-      </button>
-      <button class="zoom-btn" onclick="zoomOut()" title="Verkleinern">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
-          <path d="M8 11h6"/>
-        </svg>
-      </button>
-      <button class="zoom-btn" onclick="resetZoom()" title="Zurücksetzen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Slideshow Controls -->
-    <button class="slideshow-btn prev" onclick="prevImage()">
+    
+    <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Vorheriges Bild">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M15 18l-6-6 6-6"/>
       </svg>
     </button>
     
-    <button class="slideshow-btn next" onclick="nextImage()">
+    <button class="lightbox-nav next" id="lightboxNext" aria-label="Nächstes Bild">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18l6-6-6-6"/>
       </svg>
     </button>
 
-    <!-- Image Container with Zoom -->
     <div class="lightbox-content">
-      <div class="lightbox-image-container" id="lightboxImageContainer">
-        <img id="lightboxImage" src="" alt="" class="lightbox-img"/>
-      </div>
-      
-      <!-- Image Info -->
+      <img id="lightboxImage" src="" alt="" class="lightbox-img"/>
       <div class="lightbox-info">
         <h3 id="lightboxTitle"></h3>
-        <p id="lightboxCategory"></p>
-        <span id="lightboxCounter" class="image-counter"></span>
+        <span id="lightboxCounter"></span>
       </div>
-    </div>
-
-    <!-- Thumbnail Strip -->
-    <div class="thumbnail-strip" id="thumbnailStrip">
-      {allImages.map((image, index) => (
-        <div 
-          class="thumbnail" 
-          data-index={index}
-          data-action="go-to-image"
-        >
-          <img src={image.src} alt={image.alt} loading="lazy" />
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <!-- Album View Modal -->
-  <div id="albumModal" class="album-modal">
-    <div class="album-modal-backdrop" onclick="closeAlbum()"></div>
-    <div class="album-modal-content">
-      <button class="album-modal-close" onclick="closeAlbum()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-      </button>
-      <h2 id="albumModalTitle" class="album-modal-title"></h2>
-      <div id="albumModalGrid" class="album-modal-grid"></div>
     </div>
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ allImages: JSON.stringify(allImages), imagesByCategory: JSON.stringify(imagesByCategory) }}>
-  // Global variables
-  let currentImageIndex = 0;
-  let currentZoom = 1;
-  let isDragging = false;
-  let startX, startY, translateX = 0, translateY = 0;
-  let filteredImages = [...allImages];
-  let currentFilter = 'all';
-
-  // Event Delegation - Handle clicks on album cards, masonry items, and thumbnails
-  document.addEventListener('click', (e) => {
-    // Check for album card click
-    const albumCard = e.target.closest('[data-action="open-album"]');
-    if (albumCard) {
-      e.preventDefault();
-      e.stopPropagation();
-      const category = albumCard.dataset.category;
-      if (category) {
-        openAlbum(category);
-      }
-      return;
-    }
-    
-    // Check for masonry item click
-    const masonryItem = e.target.closest('[data-action="open-lightbox"]');
-    if (masonryItem) {
-      e.preventDefault();
-      e.stopPropagation();
-      const index = parseInt(masonryItem.dataset.index);
-      if (!isNaN(index)) {
-        openLightbox(index);
-      }
-      return;
-    }
-
-    // Check for thumbnail click
-    const thumbnail = e.target.closest('[data-action="go-to-image"]');
-    if (thumbnail) {
-      e.preventDefault();
-      e.stopPropagation();
-      const index = parseInt(thumbnail.dataset.index);
-      if (!isNaN(index)) {
-        goToImage(index);
-      }
-      return;
-    }
-  });
+<script is:inline define:vars={{ images: JSON.stringify(images), categories: JSON.stringify(categories) }}>
+  // Debug info
+  console.log('Gallery loaded with', images.length, 'images');
+  console.log('Categories:', categories);
+  
+  let currentIndex = 0;
+  let filteredImages = [...images];
 
   // Filter functionality
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const filter = btn.dataset.filter;
-      currentFilter = filter;
       
       // Update active button
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -263,319 +121,109 @@ const allImages = images; // Flat array for lightbox
       
       // Filter images
       if (filter === 'all') {
-        filteredImages = [...allImages];
-        document.getElementById('albumsGrid').style.display = 'grid';
-        document.getElementById('masonryGrid').style.display = 'none';
+        filteredImages = [...images];
       } else {
-        filteredImages = allImages.filter(img => (img.category || 'Allgemein') === filter);
-        document.getElementById('albumsGrid').style.display = 'none';
-        document.getElementById('masonryGrid').style.display = 'block';
-        
-        // Update masonry items visibility
-        document.querySelectorAll('.masonry-item').forEach(item => {
-          if (item.dataset.category === filter) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
-        
-        // Reinitialize masonry layout
-        setTimeout(initMasonry, 100);
+        filteredImages = images.filter(img => (img.category || 'Allgemein') === filter);
       }
+      
+      // Show/hide gallery items
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     });
   });
 
-  // Album functionality
-  function openAlbum(category) {
-    const modal = document.getElementById('albumModal');
-    const title = document.getElementById('albumModalTitle');
-    const grid = document.getElementById('albumModalGrid');
+  // Open lightbox - use event delegation for better reliability
+  document.getElementById('galleryGrid').addEventListener('click', (e) => {
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
     
-    title.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-    grid.innerHTML = '';
+    const index = parseInt(item.dataset.index);
+    console.log('Clicked image index:', index);
     
-    const images = imagesByCategory[category] || [];
-    images.forEach((image, index) => {
-      const item = document.createElement('div');
-      item.className = 'album-modal-item';
-      item.onclick = () => {
-        closeAlbum();
-        const globalIndex = allImages.findIndex(img => img.id === image.id);
-        openLightbox(globalIndex);
-      };
-      
-      item.innerHTML = `
-        <div class="skeleton-loader" data-skeleton></div>
-        <img src="${image.src}" alt="${image.alt}" loading="lazy" 
-             onload="this.previousElementSibling.style.display='none'">
-        <div class="album-item-overlay">
-          <span>${image.title}</span>
-        </div>
-      `;
-      
-      grid.appendChild(item);
-    });
+    // Find index in filtered images
+    const image = images[index];
+    if (!image) {
+      console.error('Image not found at index', index);
+      return;
+    }
     
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
+    currentIndex = filteredImages.findIndex(img => img.id === image.id);
+    if (currentIndex === -1) currentIndex = 0;
+    
+    console.log('Opening lightbox at index:', currentIndex, 'Image:', image.title);
+    openLightbox();
+  });
 
-  function closeAlbum() {
-    const modal = document.getElementById('albumModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  // Lightbox functionality
-  function openLightbox(index) {
-    currentImageIndex = index;
+  function openLightbox() {
     const lightbox = document.getElementById('lightbox');
-    const image = filteredImages[index] || allImages[index];
-    
-    if (!image) return;
-    
-    updateLightboxImage(image);
+    if (!lightbox) {
+      console.error('Lightbox element not found');
+      return;
+    }
+    updateLightboxImage();
+    lightbox.style.display = 'flex';
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
-    // Update thumbnails
-    document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-      thumb.classList.toggle('active', i === currentImageIndex);
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', handleKeydown);
+    console.log('Lightbox opened');
   }
 
   function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
     lightbox.classList.remove('active');
+    lightbox.style.display = 'none';
     document.body.style.overflow = '';
-    resetZoom();
-    document.removeEventListener('keydown', handleKeydown);
+    console.log('Lightbox closed');
   }
 
-  function updateLightboxImage(image) {
-    const img = document.getElementById('lightboxImage');
-    const title = document.getElementById('lightboxTitle');
-    const category = document.getElementById('lightboxCategory');
-    const counter = document.getElementById('lightboxCounter');
+  function updateLightboxImage() {
+    const image = filteredImages[currentIndex];
+    if (!image) return;
     
-    img.src = image.src;
-    img.alt = image.alt;
-    title.textContent = image.title;
-    category.textContent = image.category || 'Allgemein';
-    counter.textContent = `${currentImageIndex + 1} / ${allImages.length}`;
-    
-    resetZoom();
+    document.getElementById('lightboxImage').src = image.src;
+    document.getElementById('lightboxImage').alt = image.alt;
+    document.getElementById('lightboxTitle').textContent = image.title;
+    document.getElementById('lightboxCounter').textContent = `${currentIndex + 1} / ${filteredImages.length}`;
   }
 
   function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % allImages.length;
-    updateLightboxImage(allImages[currentImageIndex]);
-    updateThumbnails();
+    currentIndex = (currentIndex + 1) % filteredImages.length;
+    updateLightboxImage();
   }
 
   function prevImage() {
-    currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
-    updateLightboxImage(allImages[currentImageIndex]);
-    updateThumbnails();
+    currentIndex = (currentIndex - 1 + filteredImages.length) % filteredImages.length;
+    updateLightboxImage();
   }
 
-  function goToImage(index) {
-    currentImageIndex = index;
-    updateLightboxImage(allImages[currentImageIndex]);
-    updateThumbnails();
-  }
-
-  function updateThumbnails() {
-    document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-      thumb.classList.toggle('active', i === currentImageIndex);
-      if (i === currentImageIndex) {
-        thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
-    });
-  }
-
-  // Zoom functionality
-  function zoomIn() {
-    currentZoom = Math.min(currentZoom + 0.5, 4);
-    applyZoom();
-  }
-
-  function zoomOut() {
-    currentZoom = Math.max(currentZoom - 0.5, 0.5);
-    if (currentZoom === 1) {
-      translateX = 0;
-      translateY = 0;
-    }
-    applyZoom();
-  }
-
-  function resetZoom() {
-    currentZoom = 1;
-    translateX = 0;
-    translateY = 0;
-    applyZoom();
-  }
-
-  function applyZoom() {
-    const container = document.getElementById('lightboxImageContainer');
-    const img = document.getElementById('lightboxImage');
-    
-    img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
-    container.style.cursor = currentZoom > 1 ? 'grab' : 'default';
-  }
-
-  // Drag functionality for zoomed images
-  const imageContainer = document.getElementById('lightboxImageContainer');
+  // Event listeners
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxNext').addEventListener('click', (e) => { e.stopPropagation(); nextImage(); });
+  document.getElementById('lightboxPrev').addEventListener('click', (e) => { e.stopPropagation(); prevImage(); });
   
-  imageContainer?.addEventListener('mousedown', (e) => {
-    if (currentZoom > 1) {
-      isDragging = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
-      imageContainer.style.cursor = 'grabbing';
-    }
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
-      applyZoom();
-    }
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-    if (imageContainer) {
-      imageContainer.style.cursor = currentZoom > 1 ? 'grab' : 'default';
-    }
-  });
-
-  // Mouse wheel zoom
-  imageContainer?.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if (e.deltaY < 0) {
-      zoomIn();
-    } else {
-      zoomOut();
+  // Close on backdrop click
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('lightbox')) {
+      closeLightbox();
     }
   });
 
   // Keyboard navigation
-  function handleKeydown(e) {
-    switch(e.key) {
-      case 'Escape':
-        closeLightbox();
-        break;
-      case 'ArrowRight':
-        nextImage();
-        break;
-      case 'ArrowLeft':
-        prevImage();
-        break;
-      case '+':
-      case '=':
-        zoomIn();
-        break;
-      case '-':
-        zoomOut();
-        break;
-      case '0':
-        resetZoom();
-        break;
-    }
-  }
-
-  // Masonry Layout
-  function initMasonry() {
-    const grid = document.getElementById('masonryGrid');
-    if (!grid) return;
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
     
-    const items = grid.querySelectorAll('.masonry-item:not([style*="display: none"])');
-    const columnWidth = 300;
-    const gap = 16;
-    const containerWidth = grid.clientWidth;
-    const columns = Math.floor(containerWidth / (columnWidth + gap));
-    
-    const columnHeights = new Array(columns).fill(0);
-    
-    items.forEach((item) => {
-      const img = item.querySelector('img');
-      if (!img.complete) {
-        img.onload = () => positionMasonryItem(item, columnHeights, columnWidth, gap);
-      } else {
-        positionMasonryItem(item, columnHeights, columnWidth, gap);
-      }
-    });
-    
-    const maxHeight = Math.max(...columnHeights);
-    grid.style.height = `${maxHeight}px`;
-  }
-
-  function positionMasonryItem(item, columnHeights, columnWidth, gap) {
-    const img = item.querySelector('img');
-    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
-    const itemHeight = columnWidth / aspectRatio;
-    
-    const minHeight = Math.min(...columnHeights);
-    const columnIndex = columnHeights.indexOf(minHeight);
-    
-    item.style.position = 'absolute';
-    item.style.left = `${columnIndex * (columnWidth + gap)}px`;
-    item.style.top = `${minHeight}px`;
-    item.style.width = `${columnWidth}px`;
-    
-    columnHeights[columnIndex] += itemHeight + gap;
-  }
-
-  // Initialize masonry on load and resize
-  window.addEventListener('load', initMasonry);
-  window.addEventListener('resize', () => {
-    if (document.getElementById('masonryGrid').style.display !== 'none') {
-      initMasonry();
-    }
-  });
-
-  // Touch/Swipe support for mobile
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  document.getElementById('lightbox')?.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, false);
-
-  document.getElementById('lightbox')?.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  }, false);
-
-  function handleSwipe() {
-    if (touchEndX < touchStartX - 50) nextImage();
-    if (touchEndX > touchStartX + 50) prevImage();
-  }
-
-  // Prevent context menu on images
-  document.querySelectorAll('.masonry-img, .lightbox-img').forEach(img => {
-    img.addEventListener('contextmenu', e => e.preventDefault());
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
   });
 </script>
 
 <style>
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .gallery-section {
-    padding: 3rem 0;
-  }
-
-  /* Filter Buttons */
   .filter-container {
     display: flex;
     flex-wrap: wrap;
@@ -602,8 +250,6 @@ const allImages = images; // Flat array for lightbox
   .filter-btn:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .filter-btn.active {
@@ -621,175 +267,66 @@ const allImages = images; // Flat array for lightbox
     opacity: 0.7;
   }
 
-  /* Skeleton Loader */
-  .skeleton-loader {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: inherit;
-  }
-
-  @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  /* Albums Grid */
-  .albums-grid {
+  /* Gallery Grid */
+  .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 
-  .album-card {
-    background: white;
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .album-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .album-cover {
+  .gallery-item {
     position: relative;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-  }
-
-  .album-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .album-card:hover .album-cover img {
-    transform: scale(1.1);
-  }
-
-  .album-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .album-card:hover .album-overlay {
-    opacity: 1;
-  }
-
-  .album-icon {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .album-open {
-    color: white;
-    font-weight: 500;
-    font-size: 1.1rem;
-  }
-
-  .album-count {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .album-info {
-    padding: 1.25rem;
-  }
-
-  .album-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-gray-900);
-    margin-bottom: 0.25rem;
-  }
-
-  .album-description {
-    color: var(--color-gray-500);
-    font-size: 0.9rem;
-  }
-
-  /* Masonry Grid */
-  .masonry-grid {
-    position: relative;
-    width: 100%;
-  }
-
-  .masonry-item {
-    position: absolute;
     border-radius: 0.75rem;
     overflow: hidden;
+    aspect-ratio: 4/3;
+    background: var(--color-gray-200);
     cursor: pointer;
-    background: var(--color-gray-100);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .masonry-item:hover {
+  .gallery-item:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 10;
   }
 
-  .masonry-img {
+  .gallery-img {
     width: 100%;
-    height: auto;
-    display: block;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
-  .masonry-img.loaded {
-    opacity: 1;
+  .gallery-item:hover .gallery-img {
+    transform: scale(1.05);
   }
 
-  .masonry-overlay {
+  .gallery-overlay {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.7));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 1rem;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
-  .masonry-item:hover .masonry-overlay {
+  .gallery-item:hover .gallery-overlay {
     opacity: 1;
-  }
-
-  .zoom-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: white;
   }
 
   .image-title {
     color: white;
-    font-weight: 500;
-    text-align: center;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .image-category {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    text-transform: capitalize;
   }
 
   /* Empty State */
@@ -819,20 +356,13 @@ const allImages = images; // Flat array for lightbox
     position: fixed;
     inset: 0;
     z-index: 1000;
-    display: none;
+    background: rgba(0, 0, 0, 0.95);
     align-items: center;
     justify-content: center;
   }
 
   .lightbox.active {
-    display: flex;
-  }
-
-  .lightbox-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
+    display: flex !important;
   }
 
   .lightbox-close {
@@ -850,7 +380,7 @@ const allImages = images; // Flat array for lightbox
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    z-index: 1002;
+    z-index: 1001;
   }
 
   .lightbox-close:hover {
@@ -863,99 +393,7 @@ const allImages = images; // Flat array for lightbox
     height: 24px;
   }
 
-  /* Zoom Controls */
-  .zoom-controls {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    display: flex;
-    gap: 0.5rem;
-    z-index: 1002;
-  }
-
-  .zoom-btn {
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 0.5rem;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-
-  .zoom-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .zoom-btn svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Lightbox Content */
-  .lightbox-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 4rem 6rem 8rem;
-    z-index: 1001;
-  }
-
-  .lightbox-image-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: grab;
-  }
-
-  .lightbox-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    transition: transform 0.2s ease;
-    user-select: none;
-  }
-
-  .lightbox-info {
-    position: absolute;
-    bottom: 5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    color: white;
-    z-index: 1002;
-  }
-
-  .lightbox-info h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-
-  .lightbox-info p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-  }
-
-  .image-counter {
-    display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.25rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2rem;
-    font-size: 0.85rem;
-  }
-
-  /* Slideshow Controls */
-  .slideshow-btn {
+  .lightbox-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -970,237 +408,73 @@ const allImages = images; // Flat array for lightbox
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    z-index: 1002;
+    z-index: 1001;
   }
 
-  .slideshow-btn:hover {
+  .lightbox-nav:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.1);
   }
 
-  .slideshow-btn.prev {
+  .lightbox-nav.prev {
     left: 1.5rem;
   }
 
-  .slideshow-btn.next {
+  .lightbox-nav.next {
     right: 1.5rem;
   }
 
-  .slideshow-btn svg {
+  .lightbox-nav svg {
     width: 28px;
     height: 28px;
   }
 
-  /* Thumbnail Strip */
-  .thumbnail-strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    overflow-x: auto;
-    z-index: 1002;
-  }
-
-  .thumbnail {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    opacity: 0.6;
-  }
-
-  .thumbnail:hover,
-  .thumbnail.active {
-    border-color: white;
-    opacity: 1;
-  }
-
-  .thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Album Modal */
-  .album-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .album-modal.active {
-    display: flex;
-  }
-
-  .album-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-  }
-
-  .album-modal-content {
-    position: relative;
-    background: white;
-    border-radius: 1rem;
-    width: 90%;
-    max-width: 1200px;
+  .lightbox-content {
+    max-width: 90vw;
     max-height: 90vh;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .album-modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.1);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 1001;
-  }
-
-  .album-modal-close:hover {
-    background: rgba(0, 0, 0, 0.2);
-    transform: rotate(90deg);
-  }
-
-  .album-modal-close svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .album-modal-title {
-    padding: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--color-gray-200);
-    margin: 0;
-  }
-
-  .album-modal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1.5rem;
-    overflow-y: auto;
-    max-height: 60vh;
-  }
-
-  .album-modal-item {
-    position: relative;
-    aspect-ratio: 1;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  .album-modal-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .album-modal-item:hover img {
-    transform: scale(1.1);
-  }
-
-  .album-item-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .album-modal-item:hover .album-item-overlay {
-    opacity: 1;
-  }
-
-  .album-item-overlay span {
-    color: white;
-    font-weight: 500;
     text-align: center;
-    padding: 0.5rem;
+  }
+
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  .lightbox-info {
+    margin-top: 1rem;
+    color: white;
+  }
+
+  .lightbox-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  #lightboxCounter {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
   }
 
   /* Responsive */
   @media (max-width: 768px) {
-    .filter-container {
-      gap: 0.5rem;
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
     }
 
-    .filter-btn {
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .albums-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .lightbox-content {
-      padding: 3rem 1rem 6rem;
-    }
-
-    .slideshow-btn {
+    .lightbox-nav {
       width: 44px;
       height: 44px;
     }
 
-    .slideshow-btn.prev {
+    .lightbox-nav.prev {
       left: 0.5rem;
     }
 
-    .slideshow-btn.next {
+    .lightbox-nav.next {
       right: 0.5rem;
-    }
-
-    .thumbnail-strip {
-      height: 80px;
-    }
-
-    .thumbnail {
-      width: 60px;
-      height: 60px;
-    }
-
-    .album-modal-grid {
-      grid-template-columns: repeat(2, 1fr);
-      padding: 1rem;
-    }
-
-    .zoom-controls {
-      top: auto;
-      bottom: 5rem;
-      left: 50%;
-      transform: translateX(-50%);
     }
   }
 </style>
-</BaseLayout>
