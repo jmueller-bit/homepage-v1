@@ -1,13 +1,141 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 ---
 
 <BaseLayout title="Impressum">
-  <Section title="Impressum">
-    <p>Angaben gemäß § 5 TMG / § 25 MedienG:</p>
-    <p>Astrid Lindgren Zentrum<br />Mustergasse 123<br />1230 Wien</p>
-    <p>ZVR-Zahl: 123456789</p>
-    <p>E-Mail: office@astrid-lindgren-zentrum.at</p>
+  <Hero
+    title="Impressum"
+    description="Informationspflicht laut §5 E-Commerce Gesetz, §14 Unternehmensgesetzbuch, §63 Gewerbeordnung und Offenlegungspflicht laut §25 Mediengesetz."
+    badge="Rechtliches"
+  />
+
+  <Section>
+    <div class="impressum-content">
+      <div class="info-block">
+        <h2>Medieninhaber</h2>
+        <p>
+          <strong>Astrid Lindgren Zentrum – Verein für Pädagogik und Kultur</strong><br />
+          Breitenfurter Straße 401-413/1/R02<br />
+          1230 Wien<br /><br />
+          <strong>Tel.:</strong> <a href="tel:+4318874053">+43 1 887 40 53</a><br />
+          <strong>Fax:</strong> +43 1 887 40 53<br />
+          <strong>E-Mail:</strong> <a href="mailto:office@astrid-lindgren-zentrum.at">office@astrid-lindgren-zentrum.at</a><br />
+          <strong>ZVR:</strong> 960385266
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Organschaftliche Vertreter</h2>
+        <p>
+          <strong>Obmann:</strong> Inno Fail<br />
+          <strong>Kassiererin:</strong> Ilona Müller-Pflegerl
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Vereinszweck</h2>
+        <p>
+          Der Verein bezweckt u.a. die Förderung, Bildung und Persönlichkeitsentwicklung von Kindern, Jugendlichen und Erwachsenen, 
+          die Verbreitung und Förderung reformpädagogischer Ansätze und des Modells des ganzheitlichen Lernens, 
+          sowie die Vermittlung von Kunst und Kreativität, die Förderung von Künstler*innen.
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Haftung für Inhalte dieser Webseite</h2>
+        <p>
+          Wir entwickeln die Inhalte dieser Webseite ständig weiter und bemühen uns korrekte und aktuelle Informationen bereitzustellen. 
+          Leider können wir keine Haftung für die Korrektheit aller Inhalte auf dieser Webseite übernehmen, 
+          speziell für jene die seitens Dritter bereitgestellt wurden.
+        </p>
+        <p>
+          Sollten Ihnen problematische oder rechtswidrige Inhalte auffallen, bitte wir Sie uns umgehend zu kontaktieren, 
+          Sie finden die Kontaktdaten oben und auf der <a href="/kontakt">Kontaktseite</a>.
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Haftung für Links auf dieser Webseite</h2>
+        <p>
+          Unsere Webseite enthält Links zu anderen Webseiten für deren Inhalt wir nicht verantwortlich sind. 
+          Haftung für verlinkte Websites besteht laut § 17 ECG für uns nicht, da wir keine Kenntnis rechtswidriger 
+          Tätigkeiten hatten und haben, uns solche Rechtswidrigkeiten auch bisher nicht aufgefallen sind und 
+          wir Links sofort entfernen würden, wenn uns Rechtswidrigkeiten bekannt werden.
+        </p>
+        <p>
+          Wenn Ihnen rechtswidrige Links auf unserer Website auffallen, bitten wir Sie uns zu kontaktieren, 
+          Sie finden die Kontaktdaten oben und auf der <a href="/kontakt">Kontaktseite</a>.
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Urheberrechtshinweis</h2>
+        <p>
+          Alle Inhalte dieser Webseite (Bilder, Fotos, Texte, Videos) unterliegen dem Urheberrecht. 
+          Jegliche Nutzung, Verwertung, Bearbeitung und Veränderung ist nur mit Zustimmung der 
+          Seitenurheberin bzw. des Seitenurhebers zulässig.
+        </p>
+        <p>
+          <strong>Fotos:</strong> © Astrid Lindgren Zentrum<br />
+          <strong>Gestaltungsbilder:</strong> © Petra Lehner<br />
+          <strong>Website Layout:</strong> Petra Lehner
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h2>Datenschutz</h2>
+        <p>
+          Informationen zum Datenschutz finden Sie auf unserer Datenschutzseite.<br />
+          <a href="/datenschutz" class="btn btn-outline" style="margin-top: 1rem; display: inline-block;">Zur Datenschutzerklärung</a>
+        </p>
+      </div>
+    </div>
   </Section>
 </BaseLayout>
+
+<style>
+  .impressum-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .info-block {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .info-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .info-block h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1rem;
+  }
+
+  .info-block p {
+    line-height: 1.7;
+    color: var(--color-gray-700);
+    margin-bottom: 1rem;
+  }
+
+  .info-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-block a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .info-block a:hover {
+    text-decoration: none;
+  }
+</style>
