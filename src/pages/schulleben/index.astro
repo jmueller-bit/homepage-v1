@@ -1,27 +1,239 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Card from '../../components/Card.astro';
-import { getNews } from '../../lib/contentful';
+import { getNews, getGalleryImages } from '../../lib/contentful';
 
-const newsItems = await getNews();
+const newsItems = await getNews(6);
+const galleryImages = await getGalleryImages(8);
 ---
 
 <BaseLayout title="Schulleben">
+  <Hero
+    title="Schul<span class='hero-title-accent'>leben</span>"
+    description="Einblicke in unseren Schulalltag, Aktivitäten und besondere Momente."
+    badge="Aktuelles"
+  />
+
+  <!-- News Section -->
   <Section 
     title="Aktuelles & News" 
-    description="Einblicke in unseren Schulalltag, Berichte von Ausflügen und wichtige Ankündigungen."
+    description="Berichte von Ausflügen, wichtige Ankündigungen und Einblicke in unseren Alltag."
   >
-    <div class="grid grid-3">
-      {newsItems.map((item) => (
-        <Card 
-          title={item.title}
-          description={item.excerpt}
-          href={`/schulleben/aktuelles`}
-          ctaLabel="Beitrag lesen"
-          imagePlaceholder={item.category || 'News'}
-        />
-      ))}
+    {newsItems.length > 0 ? (
+      <div class="news-grid">
+        {newsItems.map((item) => (
+          <Card 
+            title={item.title}
+            description={item.excerpt}
+            href={`/news/${item.slug}`}
+            ctaLabel="Beitrag lesen"
+            image={item.image?.url}
+            imagePlaceholder={item.category || 'News'}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <p>Bald gibt es hier Neuigkeiten zu lesen!</p>
+      </div>
+    )}
+    
+    <div class="section-footer">
+      <a href="/schulleben/aktuelles" class="btn btn-outline">Alle News anzeigen</a>
+    </div>
+  </Section>
+
+  <!-- Gallery Preview Section -->
+  <Section variant="alt">
+    <div class="gallery-section">
+      <h2 class="section-title">Bilder aus dem Schulalltag</h2>
+      <p class="section-subtitle">Eindrücke von unseren Projekten, Festen und Ausflügen.</p>
+      
+      {galleryImages.length > 0 ? (
+        <div class="gallery-preview-grid">
+          {galleryImages.map((image) => (
+            <a href="/schulleben/galerie" class="gallery-preview-item">
+              <img 
+                src={image.src} 
+                alt={image.alt}
+                loading="lazy"
+                class="gallery-preview-img"
+              />
+              <div class="gallery-preview-overlay">
+                <span class="gallery-preview-title">{image.title}</span>
+                <span class="gallery-preview-category">{image.category}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>Bald gibt es hier Bilder zu sehen!</p>
+        </div>
+      )}
+      
+      <div class="section-footer">
+        <a href="/schulleben/galerie" class="btn btn-primary">Zur Galerie</a>
+      </div>
     </div>
   </Section>
 </BaseLayout>
+
+<style>
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 968px) {
+    .news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .news-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--color-gray-600);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+
+  .section-footer {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: var(--color-gray-50);
+    border-radius: 1rem;
+  }
+
+  .empty-state p {
+    color: var(--color-gray-600);
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-gray-300);
+    color: var(--color-gray-700);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  /* Gallery Preview */
+  .gallery-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .gallery-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 968px) {
+    .gallery-preview-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery-preview-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .gallery-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .gallery-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-preview-item:hover .gallery-preview-img {
+    transform: scale(1.1);
+  }
+
+  .gallery-preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.7));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .gallery-preview-item:hover .gallery-preview-overlay {
+    opacity: 1;
+  }
+
+  .gallery-preview-title {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .gallery-preview-category {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    text-transform: capitalize;
+  }
+</style>
