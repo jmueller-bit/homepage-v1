@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
 ---
 
 <BaseLayout title="Tagesablauf">
@@ -8,6 +9,267 @@ import Hero from '../../components/Hero.astro';
     title="Ein Tag am <span class='hero-title-accent'>ALZ</span>"
     description="Vom Ankommen bis zum gemeinsamen Abschluss – wie wir den Schultag gestalten."
     badge="Schulalltag"
-    imagePlaceholder="TAGESABLAUF"
   />
+
+  <!-- Ein typischer Tag Section -->
+  <Section>
+    <div class="tagesablauf-section">
+      <h2 class="section-title">Ein typischer Tag</h2>
+      <p class="section-subtitle">Unser Tagesablauf bietet Struktur und Raum für individuelle Entfaltung.</p>
+      
+      <div class="timetable">
+        <div class="time-row">
+          <div class="time">07:30</div>
+          <div class="activity">Betreuung beginnt</div>
+        </div>
+        <div class="time-row">
+          <div class="time">08:00</div>
+          <div class="activity">Beginn des Unterrichts</div>
+        </div>
+        <div class="time-row">
+          <div class="time">10:00</div>
+          <div class="activity">Pause mit Obst & Getränken</div>
+        </div>
+        <div class="time-row">
+          <div class="time">10:30</div>
+          <div class="activity">Unterricht</div>
+        </div>
+        <div class="time-row">
+          <div class="time">12:00</div>
+          <div class="activity">Mittagessen</div>
+        </div>
+        <div class="time-row">
+          <div class="time">13:00</div>
+          <div class="activity">Nachmittagsunterricht / AGs</div>
+        </div>
+        <div class="time-row">
+          <div class="time">15:30</div>
+          <div class="activity">Ende der Regularstunden</div>
+        </div>
+        <div class="time-row">
+          <div class="time">17:00</div>
+          <div class="activity">Späte Betreuung (optional)</div>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Unser Angebot Section -->
+  <Section variant="alt">
+    <div class="angebot-section">
+      <h2 class="section-title">Unser Angebot</h2>
+      <p class="section-subtitle">Neben dem regulären Unterricht bieten wir viele zusätzliche Aktivitäten.</p>
+      
+      <div class="angebot-grid">
+        <div class="angebot-card">
+          <div class="angebot-icon">🎨</div>
+          <h3>Kunst & Gestalten</h3>
+          <p>Malen, Basteln, Töpfern und Textilgestaltung fördern die Kreativität.</p>
+        </div>
+
+        <div class="angebot-card">
+          <div class="angebot-icon">🎵</div>
+          <h3>Musik</h3>
+          <p>Singen, Instrumentalunterricht und Chor sind fester Bestandteil.</p>
+        </div>
+
+        <div class="angebot-card">
+          <div class="angebot-icon">⚽</div>
+          <h3>Sport</h3>
+          <p>Sportunterricht, Schwimmen und diverse Sport-AGs.</p>
+        </div>
+
+        <div class="angebot-card">
+          <div class="angebot-icon">🌱</div>
+          <h3>Natur & Umwelt</h3>
+          <p>Gartenarbeit, Tierpflege und Umweltprojekte.</p>
+        </div>
+
+        <div class="angebot-card">
+          <div class="angebot-icon">🎭</div>
+          <h3>Theater</h3>
+          <p>Regelmäßige Theaterproduktionen fördern Selbstbewusstsein.</p>
+        </div>
+
+        <div class="angebot-card">
+          <div class="angebot-icon">🌍</div>
+          <h3>Fremdsprachen</h3>
+          <p>Englisch ab der 1. Klasse, Latein ab der 5. Klasse.</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- CTA Section -->
+  <Section>
+    <div class="cta-section">
+      <h2>Haben Sie Fragen?</h2>
+      <p class="cta-text">Wir beraten Sie gerne persönlich zu unserem Schulangebot.</p>
+      <a href="/kontakt" class="btn btn-primary btn-lg">Kontakt aufnehmen</a>
+    </div>
+  </Section>
 </BaseLayout>
+
+<style>
+  /* Tagesablauf Section */
+  .tagesablauf-section {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--color-gray-600);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+
+  .timetable {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  .time-row {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--color-gray-100);
+    transition: background-color 0.2s ease;
+  }
+
+  .time-row:last-child {
+    border-bottom: none;
+  }
+
+  .time-row:hover {
+    background-color: var(--color-gray-50);
+  }
+
+  .time {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 100px;
+    font-family: monospace;
+  }
+
+  .activity {
+    font-size: 1.1rem;
+    color: var(--color-gray-800);
+    font-weight: 500;
+  }
+
+  /* Angebot Section */
+  .angebot-section {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .angebot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 968px) {
+    .angebot-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .angebot-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .angebot-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .angebot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .angebot-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .angebot-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.75rem;
+  }
+
+  .angebot-card p {
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 1rem;
+  }
+
+  .cta-text {
+    font-size: 1.15rem;
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb, 59, 130, 246), 0.3);
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+  }
+</style>
